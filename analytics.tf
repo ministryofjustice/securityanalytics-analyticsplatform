@@ -35,17 +35,11 @@ provider "aws" {
 #############################################
 # Resources
 #############################################
-data "aws_ssm_parameter" "cidr_block" {
-  name = "/${var.app_name}/${terraform.workspace}/vpc/cidr_block"
-}
 
-data "aws_ssm_parameter" "id" {
-  name = "/${var.app_name}/${terraform.workspace}/vpc/id"
-}
 
 module "elastic_search" {
-  source     = "elastic_search"
-  app_name   = "${var.app_name}"
-  cidr_block = "${data.aws_ssm_parameter.cidr_block.value}"
-  vpc_id     = "${data.aws_ssm_parameter.id.value}"
+  source                = "elastic_search"
+  app_name              = "${var.app_name}"
+  aws_region            = "${var.aws_region}"
+ 
 }

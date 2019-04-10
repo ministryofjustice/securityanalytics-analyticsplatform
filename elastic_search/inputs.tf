@@ -2,10 +2,7 @@ variable "app_name" {
   type = "string"
 }
 
-variable "vpc_id" {
+variable "aws_region" {
   type = "string"
 }
 
-variable "cidr_block" {
-  type = "string"
-}
