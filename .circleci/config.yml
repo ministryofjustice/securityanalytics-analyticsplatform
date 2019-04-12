@@ -9,7 +9,6 @@ executors:
   terraform:
     docker:
       - image: duckpodger/python3-node-aws-terraform
-    working_directory: ~/project/analytics
 
 jobs:
   setup:
@@ -20,8 +19,7 @@ jobs:
             - git-v3-{{ .Branch }}-
             - git-v3-
 
-      - checkout:
-          path: ~/project
+      - checkout
 
       - restore_cache:
           keys:
