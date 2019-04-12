@@ -1,0 +1,82 @@
+version: 2.1
+
+master-only: &master-only
+  filters:
+    branches:
+      only: master
+
+executors:
+  terraform:
+    docker:
+      - image: duckpodger/python3-node-aws-terraform
+    working_directory: ~/project/analytics
+
+jobs:
+  setup:
+    executor: terraform
+    steps:
+      - restore_cache:
+          keys:
+            - git-v3-{{ .Branch }}-
+            - git-v3-
+
+      - checkout:
+          path: ~/project
+
+      - restore_cache:
+          keys:
+            - tf-v3-{{ .Branch }}-
+            - tf-v3-
+
+      - run:
+          name: terraform
+          command: |
+            terraform init
+            terraform workspace new dev || terraform workspace select dev
+            echo checking formatting
+            terraform fmt -check=true
+            echo making the plan
+            terraform plan -var account_id=$ACCOUNT_ID -no-color -out=plan.file > terraform.plan
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "*"
+
+      - store_artifacts:
+          path: terraform.plan
+
+      - store_artifacts:
+          path: plan.file
+
+      - save_cache:
+          key: git-v3-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - ".git"
+
+      - save_cache:
+          key: tf-v3-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - ".terraform"
+
+  deploy:
+    executor: terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform apply
+          command: terraform apply plan.file
+
+workflows:
+  version: 2
+  terraform-infrastructure:
+    jobs:
+      - setup
+      - approve:
+          type: approval
+          requires: [ setup ]
+          <<: *master-only
+      - deploy:
+          requires: [ approve ]
+          <<: *master-only
