@@ -18,14 +18,6 @@ resource "aws_security_group" "es" {
   }
 }
 
-data "aws_ssm_parameter" "num_azs" {
-  name = "/${var.app_name}/${terraform.workspace}/vpc/num_azs"
-}
-
-data "aws_ssm_parameter" "instance_subnets" {
-  name = "/${var.app_name}/${terraform.workspace}/vpc/subnets/instance"
-}
-
 locals {
   // Have to use only 2 AZs because of terraform issue  // https://github.com/terraform-providers/terraform-provider-aws/issues/7504
 

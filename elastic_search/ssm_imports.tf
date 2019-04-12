@@ -17,3 +17,15 @@ data "aws_ssm_parameter" "identity_pool" {
 data "aws_ssm_parameter" "cognito_user_arn" {
   name = "/${var.app_name}/${var.ssm_source_stage}/users/sec-an/arn"
 }
+
+data "aws_ssm_parameter" "sec_an_user" {
+  name = "/${var.app_name}/${var.ssm_source_stage}/users/sec-an/name"
+}
+
+data "aws_ssm_parameter" "num_azs" {
+  name = "/${var.app_name}/${var.ssm_source_stage}/vpc/num_azs"
+}
+
+data "aws_ssm_parameter" "instance_subnets" {
+  name = "/${var.app_name}/${var.ssm_source_stage}/vpc/subnets/instance"
+}

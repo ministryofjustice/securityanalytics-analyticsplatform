@@ -1,7 +1,3 @@
-data "aws_ssm_parameter" "sec_an_user" {
-  name = "/${var.app_name}/${terraform.workspace}/users/sec-an/name"
-}
-
 data "aws_iam_role" "sec_an_user" {
   name = "${data.aws_ssm_parameter.sec_an_user.value}"
 }
