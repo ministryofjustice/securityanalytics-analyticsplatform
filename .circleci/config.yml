@@ -30,11 +30,14 @@ jobs:
           name: terraform
           command: |
             terraform init
-            terraform workspace new dev || terraform workspace select dev
+            . .circleci/terraform_env.sh
+            terraform workspace new $DEPLOY_STAGE || terraform workspace select $DEPLOY_STAGE
+
             echo checking formatting
             terraform fmt -check=true
             echo making the plan
-            terraform plan -var account_id=$ACCOUNT_ID -no-color -out=plan.file > terraform.plan
+
+            terraform plan  -var ssm_source_stage=$SSM_SOURCE_STAGE -var account_id=$ACCOUNT_ID -no-color -out=plan.file > terraform.plan
 
       - persist_to_workspace:
           root: .

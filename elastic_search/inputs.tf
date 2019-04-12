@@ -5,3 +5,7 @@ variable "app_name" {
 variable "aws_region" {
   type = "string"
 }
+
+variable "ssm_source_stage" {
+  type = "string"
+}
