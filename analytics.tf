@@ -49,8 +49,8 @@ locals {
 }
 
 module "elastic_search" {
-  source     = "elastic_search"
-  app_name   = "${var.app_name}"
-  aws_region = "${var.aws_region}"
+  source           = "elastic_search"
+  app_name         = "${var.app_name}"
+  aws_region       = "${var.aws_region}"
   ssm_source_stage = "${local.ssm_source_stage}"
 }
