@@ -36,10 +36,8 @@ provider "aws" {
 # Resources
 #############################################
 
-
 module "elastic_search" {
-  source                = "elastic_search"
-  app_name              = "${var.app_name}"
-  aws_region            = "${var.aws_region}"
- 
+  source     = "elastic_search"
+  app_name   = "${var.app_name}"
+  aws_region = "${var.aws_region}"
 }
