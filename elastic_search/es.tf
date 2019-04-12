@@ -64,7 +64,7 @@ resource "aws_elasticsearch_domain" "es" {
     "null_resource.hack",
   ]
 
-  domain_name = "${terraform.workspace}-${var.app_name}-es"
+  domain_name = "d-${terraform.workspace}-${var.app_name}-es"
 
   elasticsearch_version = "6.3"
 
