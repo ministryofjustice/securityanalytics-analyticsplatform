@@ -46,8 +46,7 @@ resource "null_resource" "hack" {
   ]
 
   provisioner "local-exec" {
-    //TODO: remove the time delay hack
-    command = "python python/check_policy.py ${var.aws_region} ${data.aws_iam_role.sec_an_user.name} AmazonESCognitoAccess"
+    command = "python ./python/check_policy.py ${var.aws_region} ${data.aws_iam_role.sec_an_user.name} AmazonESCognitoAccess ${var.app_name}"
   }
 }
 
