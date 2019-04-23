@@ -51,6 +51,7 @@ jobs:
       - run:
           name: terraform
           command: |
+            cd infrastructure
             terraform init
             . .circleci/env.sh
             terraform get --update
@@ -109,7 +110,9 @@ jobs:
           name: integration tests
           command: |
             . .circleci/env.sh
+            cd infrastructure
             terraform apply --auto-approve -var ssm_source_stage=$DEPLOY_STAGE -var account_id=$ACCOUNT_ID -no-color
+            cd ..
             set +e # allows us to run the cleanup
             npx sls --stage=$DEPLOY_STAGE deploy
             export SUCCESS=$?
@@ -151,7 +154,10 @@ jobs:
       - run:
           name: deploy
           command: |
-            . .circleci/env.sh
+            . .circleci/env.
+            cd infrastructure
+            terraform apply plan.file
+            cd ..
             npx sls --stage=$SSM_SOURCE_STAGE deploy
 
 workflows:
