@@ -22,7 +22,7 @@ jobs:
       - checkout
 
       - run:
-          name: install virtual env
+          name: update git submodule
           command: |
             git submodule update --remote
             git submodule sync
