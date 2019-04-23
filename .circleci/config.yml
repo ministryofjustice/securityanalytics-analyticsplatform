@@ -94,7 +94,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: integration tests
+          name: unit tests
           command: |
             . .circleci/env.sh
             pytest --junitxml=test-reports/junit.xml -m unit tests
