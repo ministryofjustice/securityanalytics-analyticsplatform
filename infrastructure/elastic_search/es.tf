@@ -87,8 +87,8 @@ resource "aws_elasticsearch_domain" "es" {
     role_arn         = "${data.aws_iam_role.sec_an_user.arn}"
   }
   tags {
-    Domain             = "SecurityData"
-    app_name           = "${var.app_name}"
-    workspace          = "${terraform.workspace}"
+    Domain    = "SecurityData"
+    app_name  = "${var.app_name}"
+    workspace = "${terraform.workspace}"
   }
 }
