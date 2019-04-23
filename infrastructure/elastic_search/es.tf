@@ -90,6 +90,5 @@ resource "aws_elasticsearch_domain" "es" {
     Domain             = "SecurityData"
     app_name           = "${var.app_name}"
     workspace          = "${terraform.workspace}"
-    confirm_attachment = "${aws_iam_role_policy_attachment.es_user.policy_arn}"
   }
 }
