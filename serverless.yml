@@ -89,6 +89,6 @@ functions:
 
 resources:
   Resources:
-    sampleRole: ${file(queue_injestor/queue_injestor.yml):role}
+    injestorRole: ${file(queue_injestor/queue_injestor.yml):role}
 
 
