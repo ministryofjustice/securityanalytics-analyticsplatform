@@ -6,7 +6,7 @@ function:
     - ${ssm:/${self:custom.app-name}/${opt:stage, '${env:USERNAME}'}/lambda/layer/utils, ssm:/${self:custom.app-name}/dev/lambda/layer/utils}
   events:
     - sqs:
-        arn: ${ssm:/${self:custom.app-name}/${self:provider.stage}/tasks/${self:custom.plugin-name}/analytics/elastic/inject_queue/arn}
+        arn: ${ssm:/${self:custom.app-name}/${self:provider.stage}/analytics/elastic/injest_queue/arn}
         batchSize: 1
 
 role:
@@ -28,3 +28,26 @@ role:
             Service:
               - lambda.amazonaws.com
           Action: sts:AssumeRole
+    Policies:
+      - PolicyName: ${opt:stage, '${env:USERNAME}'}-${self:service}-elastic-injestor
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - 'Fn::Join':
+                    - ':'
+                    - - 'arn:aws:logs'
+                      - Ref: 'AWS::Region'
+                      - Ref: 'AWS::AccountId'
+                      - 'log-group:/aws/lambda/*:*:*'
+            - Effect: Allow
+              Action:
+                - sqs:DeleteMessage
+                - sqs:ReceiveMessage
+                - sqs:GetQueueAttributes
+              Resource: ${ssm:/${self:custom.app-name}/${self:provider.stage}/analytics/elastic/injest_queue/arn}
