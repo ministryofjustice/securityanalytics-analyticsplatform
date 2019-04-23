@@ -157,7 +157,7 @@ jobs:
       - run:
           name: deploy
           command: |
-            . .circleci/env.
+            . .circleci/env.sh
             cd infrastructure
             terraform apply plan.file
             cd ..
