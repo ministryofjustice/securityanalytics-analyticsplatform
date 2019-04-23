@@ -1,0 +1,30 @@
+function:
+  handler: queue_injestor.queue_injestor.injest
+  name: ${opt:stage, '${env:USERNAME}'}-${self:service}-injestor
+  role: injestorRole
+  layers:
+    - ${ssm:/${self:custom.app-name}/${opt:stage, '${env:USERNAME}'}/lambda/layer/utils, ssm:/${self:custom.app-name}/dev/lambda/layer/utils}
+  events:
+    - sqs:
+        arn: ${ssm:/${self:custom.app-name}/${self:provider.stage}/tasks/${self:custom.plugin-name}/analytics/elastic/inject_queue/arn}
+        batchSize: 1
+
+role:
+  Type: AWS::IAM::Role
+  Properties:
+    Path:
+      # Not allowed '-' characters in a path
+      Fn::Join:
+        - ""
+        - Fn::Split:
+            - "-"
+            - /${self:custom.app-name}/${opt:stage, '${env:USERNAME}'}/${self:service}/analytics/elastic/injestor/
+    RoleName: ${opt:stage, '${env:USERNAME}'}-${self:service}-elastic-injestor
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - lambda.amazonaws.com
+          Action: sts:AssumeRole

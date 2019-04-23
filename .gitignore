@@ -1,0 +1,10 @@
+# . dirs
+.terraform
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*auto.tfvars
+terraform.tfvars
