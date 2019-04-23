@@ -111,7 +111,8 @@ jobs:
           command: |
             . .circleci/env.sh
             cd infrastructure
-            terraform apply --auto-approve -var ssm_source_stage=$DEPLOY_STAGE -var account_id=$ACCOUNT_ID -no-color
+            terraform workspace new $DEPLOY_STAGE || terraform workspace select $DEPLOY_STAGE
+            terraform apply --auto-approve -var ssm_source_stage=$SSM_SOURCE_STAGE -var account_id=$ACCOUNT_ID -no-color
             cd ..
             set +e # allows us to run the cleanup
             npx sls --stage=$DEPLOY_STAGE deploy
