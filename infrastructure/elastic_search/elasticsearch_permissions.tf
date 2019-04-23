@@ -2,11 +2,6 @@ data "aws_iam_role" "sec_an_user" {
   name = "${data.aws_ssm_parameter.sec_an_user.value}"
 }
 
-resource "aws_iam_role_policy_attachment" "es_user" {
-  role       = "${data.aws_iam_role.sec_an_user.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonESCognitoAccess"
-}
-
 data "aws_iam_policy_document" "kibana_permissions" {
   statement {
     effect    = "Allow"

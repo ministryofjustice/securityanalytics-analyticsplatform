@@ -40,21 +40,7 @@ output "num_azs" {
 
 data "aws_caller_identity" "account" {}
 
-resource "null_resource" "hack" {
-  depends_on = [
-    "aws_iam_role_policy_attachment.es_user",
-  ]
-
-  provisioner "local-exec" {
-    command = "python ./python/check_policy.py ${var.aws_region} ${data.aws_iam_role.sec_an_user.name} AmazonESCognitoAccess ${var.app_name}"
-  }
-}
-
 resource "aws_elasticsearch_domain" "es" {
-  depends_on = [
-    "null_resource.hack",
-  ]
-
   domain_name = "d-${terraform.workspace}-${var.app_name}-es"
 
   elasticsearch_version = "6.3"
