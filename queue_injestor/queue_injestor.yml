@@ -2,12 +2,18 @@ function:
   handler: queue_injestor.queue_injestor.injest
   name: ${opt:stage, '${env:USERNAME}'}-${self:service}-injestor
   role: injestorRole
+  environment:
+    REGION: ${self:provider.region}
+    STAGE: ${self:provider.stage}
+    APP_NAME: ${self:custom.app-name}
+    TASK_NAME: ${self:custom.plugin-name}
   layers:
     - ${ssm:/${self:custom.app-name}/${opt:stage, '${env:USERNAME}'}/lambda/layer/utils, ssm:/${self:custom.app-name}/dev/lambda/layer/utils}
   events:
     - sqs:
         arn: ${ssm:/${self:custom.app-name}/${self:provider.stage}/analytics/elastic/injest_queue/arn}
         batchSize: 1
+        enabled: true
 
 role:
   Type: AWS::IAM::Role
