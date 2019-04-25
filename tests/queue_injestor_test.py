@@ -80,7 +80,7 @@ TEST_ENV = {
 #     # print('hello')
 
 
-@pytest.mark.test1
+@pytest.mark.unit
 def test_real_es_server():
     # # queue_injestor.ssm_client.get_parameters.return_value = ssm_return_vals(True)
 
