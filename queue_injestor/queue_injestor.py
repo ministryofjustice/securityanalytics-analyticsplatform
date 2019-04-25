@@ -1,19 +1,9 @@
-
-
 from lambda_decorators import async_handler
 import os
 import boto3
 
 from utils.lambda_decorators import ssm_parameters
 from utils.json_serialisation import dumps
-from utils.objectify_dict import objectify
-import tarfile
-import re
-import io
-import untangle
-import datetime
-import pytz
-from urllib.parse import unquote_plus
 import requests
 from json import loads
 
