@@ -15,6 +15,7 @@ import datetime
 import pytz
 from urllib.parse import unquote_plus
 import requests
+from json import loads
 
 region = os.environ["REGION"]
 stage = os.environ["STAGE"]
@@ -37,13 +38,18 @@ async def injest(event, _):
     print(event)
     ssm_params = event["ssm_params"]
     print(ssm_params)
-    es_url = ssm_params[SSM_ES_ENDPOINT]
 
-    print(f'ES URL:{es_url}')
     for event in event["Records"]:
-
-        print(f"new record: {dumps(event['body'])}")
-        print(es_url)
+        body = loads(event['body'])
+        subject = body['Subject']
+        es_url = f"https://{ssm_params[SSM_ES_ENDPOINT]}/{subject}/{subject}"
+        message = body['Message']
+        print(f"new record: {message}")
+        print(f'ES URL:{es_url}')
         headers = {'content-type': 'application/json'}
-        r = requests.post(es_url, dumps(event['body']), headers=headers)
+
+        r = requests.post(es_url, data=message, headers=headers)
         print(f"post completed, return {r.text}")
+        response_json = r.json()
+        if 'error' in response_json.keys():
+            raise RuntimeError(dumps(response_json['error']))
