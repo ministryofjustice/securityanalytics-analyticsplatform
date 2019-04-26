@@ -1,4 +1,4 @@
-resource "aws_sqs_queue" "injestion-queue" {
+resource "aws_sqs_queue" "injestion_queue" {
   name = "${terraform.workspace}-${var.app_name}-es-injestion-queue"
 
   tags {

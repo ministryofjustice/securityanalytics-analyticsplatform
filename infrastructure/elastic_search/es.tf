@@ -54,7 +54,7 @@ resource "aws_elasticsearch_domain" "es" {
       "Effect": "Allow",
       "Action": "es:*",
       "Principal":"*",
-      "Resource": "arn:aws:es:${var.aws_region}:${data.aws_caller_identity.account.account_id}:domain/${terraform.workspace}-${var.app_name}-es/*"
+      "Resource": "arn:aws:es:${var.aws_region}:${data.aws_caller_identity.account.account_id}:domain/d-${terraform.workspace}-${var.app_name}-es/*"
     }
   ]
 }
