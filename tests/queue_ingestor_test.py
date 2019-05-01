@@ -45,7 +45,7 @@ TEST_ENV = {
 #         mock.patch("utils.json_serialisation.stringify_all"):
 #     # ensure each client is a different mock
 #     boto_client.side_effect = (mock.MagicMock() for _ in itertools.count())
-#     from queue_injestor import queue_injestor
+#     from queue_ingestor import queue_ingestor
 
 
 # @mock.patch.dict(os.environ, TEST_ENV)
@@ -59,8 +59,8 @@ TEST_ENV = {
 # @pytest.mark.unit
 # @serialise_mocks()
 # @resetting_mocks(
-#     queue_injestor.sqs_client,
-#     queue_injestor.ssm_client
+#     queue_ingestor.sqs_client,
+#     queue_ingestor.ssm_client
 
 # )
 # # def mock_requests_post(*args, **kwargs):
@@ -73,23 +73,23 @@ TEST_ENV = {
 #     # print('--------------running a test')
 #     # testdata = {'test_write_one': 'here is some data'}
 #     # print(testdata)
-#     # queue_injestor.es_url = 'test'
+#     # queue_ingestor.es_url = 'test'
 #     # inrec, query, outrec = test_records(testdata)
 
-#     # queue_injestor.injest(inrec, mock.MagicMock())
+#     # queue_ingestor.ingest(inrec, mock.MagicMock())
 #     # print('hello')
 
 
 @pytest.mark.unit
 def test_real_es_server():
-    # # queue_injestor.ssm_client.get_parameters.return_value = ssm_return_vals(True)
+    # # queue_ingestor.ssm_client.get_parameters.return_value = ssm_return_vals(True)
 
     # inrec, query, outrec = test_records(
     #     {'this is another test': 'here is some data'})
     # print(f'sending {inrec}')
-    # queue_injestor.ssm_client.get_parameters.return_value = ssm_return_vals(
+    # queue_ingestor.ssm_client.get_parameters.return_value = ssm_return_vals(
     #     True)
-    # queue_injestor.injest(inrec, 10)
+    # queue_ingestor.ingest(inrec, 10)
     # # TODO: query elasticsearch for this record
     # # TODO: get URL of ES
     # # need to wait for ES to have taken in the record before fetching - 5 secs is more than enough

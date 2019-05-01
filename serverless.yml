@@ -83,15 +83,15 @@ package:
   # https://github.com/serverless/serverless/pull/5825
   include:
     - "!./**"
-    - "./queue_injestor/**"
+    - "./queue_ingestor/**"
   exclude:
     - "**"
 
 functions:
-  injestor: ${file(queue_injestor/queue_injestor.yml):function}
+  ingestor: ${file(queue_ingestor/queue_ingestor.yml):function}
 
 resources:
   Resources:
-    injestorRole: ${file(queue_injestor/queue_injestor.yml):role}
+    ingestorRole: ${file(queue_ingestor/queue_ingestor.yml):role}
 
 
