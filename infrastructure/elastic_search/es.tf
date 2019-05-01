@@ -77,14 +77,12 @@ resource "aws_elasticsearch_domain" "es" {
   snapshot_options {
     automated_snapshot_start_hour = 23
   }
-
   cognito_options {
     enabled          = true
     user_pool_id     = "${data.aws_ssm_parameter.user_pool.value}"
     identity_pool_id = "${data.aws_ssm_parameter.identity_pool.value}"
     role_arn         = "${data.aws_iam_role.sec_an_user.arn}"
   }
-
   tags {
     Domain    = "SecurityData"
     app_name  = "${var.app_name}"
