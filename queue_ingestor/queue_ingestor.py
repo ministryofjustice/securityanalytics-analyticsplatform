@@ -31,7 +31,7 @@ async def ingest(event, _):
     for event in event["Records"]:
         body = loads(event["body"])
         subject = body["Subject"]
-        es_url = f"https://{ssm_params[SSM_ES_ENDPOINT]}/{subject}/{subject}"
+        es_url = f"https://{ssm_params[SSM_ES_ENDPOINT]}/{subject}/_doc"
         message = body["Message"]
         print(f"Posting {message} to {es_url}")
         headers = {"content-type": "application/json"}
