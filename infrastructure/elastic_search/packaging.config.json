@@ -1,0 +1,17 @@
+{
+  "base_dirs": [
+    {
+      "dir": "../queue_ingestor",
+      "base_in_zip": "queue_ingestor"
+    },
+    {
+      "dir": "../.venv/Lib/site-packages",
+      "exclude_dev_deps": true
+    }
+  ],
+  "excludes": [
+    "test",
+    "wheel",
+    "more_itertools"
+  ]
+}
