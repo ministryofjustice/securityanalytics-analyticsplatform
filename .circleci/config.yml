@@ -30,13 +30,6 @@ jobs:
 
       - restore_cache:
           keys:
-            - npm-v1-{{ .Branch }}-
-            - npm-v1-
-
-      - run: npm install
-
-      - restore_cache:
-          keys:
             - other-v1-{{ .Branch }}-
             - other-v1-
 
@@ -82,17 +75,12 @@ jobs:
             - ".git"
 
       - save_cache:
-          key: npm-v1-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - "node_modules"
-
-      - save_cache:
           key: other-v1-{{ .Branch }}-{{ .Revision }}
           paths:
             - ".terraform"
             - ".venv"
             - ".cache"
-            - ".serverless"
+            - ".generated"
             - ".pytest_cache"
 
   unit-test:
@@ -110,50 +98,6 @@ jobs:
 
 # Deploying the domain for each branch is very expensive, for now omitting integration tests
 # until we have a better plan e.g. re-using the domain.
-#  integration-test:
-#    executor: builder
-#    steps:
-#      - attach_workspace:
-#          at: .
-#      - run:
-#          name: integration tests
-#          command: |
-#            . .circleci/env.sh
-#            cd infrastructure
-#            terraform workspace new $DEPLOY_STAGE || terraform workspace select $DEPLOY_STAGE
-#            terraform apply --auto-approve -var ssm_source_stage=$SSM_SOURCE_STAGE -var account_id=$ACCOUNT_ID -no-color
-#            cd ..
-#            set +e # allows us to run the cleanup
-#            npx sls --stage=$DEPLOY_STAGE deploy
-#            export SUCCESS=$?
-#            npx sls --stage=$DEPLOY_STAGE exportEndpoints
-#            if [ $? != 0 ]; then
-#              export SUCCESS=1
-#            fi
-#            npx sls --stage=$DEPLOY_STAGE s3deploy
-#            if [ $? != 0 ]; then
-#              export SUCCESS=1
-#            fi
-#            pytest --junitxml=test-reports/junit.xml -m integration tests
-#            if [ $? != 0 ]; then
-#              export SUCCESS=1
-#            fi
-#            exit $SUCCESS
-#      - store_test_results:
-#          path: test-reports
-#
-#  integration-env-tear-down:
-#    executor: builder
-#    steps:
-#      - attach_workspace:
-#          at: .
-#      - run:
-#          name: integration env tear down
-#          command: |
-#            . .circleci/env.sh
-#            npx sls --stage=$DEPLOY_STAGE remove
-#      - store_test_results:
-#          path: test-reports
 
   deploy:
     executor: builder
@@ -167,8 +111,6 @@ jobs:
             . .circleci/env.sh
             cd infrastructure
             terraform apply plan.file
-            cd ..
-            npx sls --stage=$SSM_SOURCE_STAGE deploy
 
 workflows:
   version: 2
@@ -177,17 +119,10 @@ workflows:
       - setup
       - unit-test:
           requires: [ setup ]
-# No integration tasks until we work out how to avoid 20 mins of setup and tear down
-#      - integration-test:
-#          requires: [ setup ]
-#      - integration-env-tear-down:
-#          requires: [ integration-test ]
       - approve:
           type: approval
           requires:
             - unit-test
-# No integration tasks until we work out how to avoid 20 mins of setup and tear down
-#            - integration-test
           <<: *master-only
       - deploy:
           requires: [ approve ]
