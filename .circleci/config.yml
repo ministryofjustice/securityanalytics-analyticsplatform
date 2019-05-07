@@ -46,6 +46,9 @@ jobs:
           name: terraform
           command: |
             . .circleci/env.sh
+            ls -al /root/project
+            ls -al /root/project/.venv
+            ls -al /root/project/.venv/lib
             cd infrastructure
             terraform init
             terraform get --update
