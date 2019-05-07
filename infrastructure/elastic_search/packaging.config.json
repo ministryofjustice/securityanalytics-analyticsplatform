@@ -5,7 +5,7 @@
       "base_in_zip": "queue_ingestor"
     },
     {
-      "dir": "../.venv/lib/site-packages",
+      "dir": "../.venv/Lib/site-packages",
       "exclude_dev_deps": true
     }
   ],
