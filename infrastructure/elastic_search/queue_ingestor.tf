@@ -13,7 +13,7 @@ data "external" "analytics_zip" {
 }
 
 resource "aws_lambda_permission" "sqs_invoke" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.queue_ingestor.function_name}"
   principal     = "sqs.amazonaws.com"
