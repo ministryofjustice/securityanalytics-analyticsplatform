@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "queue_ingestor" {
 
     actions = [
       "sqs:DeleteMessage",
-      "qs:ReceiveMessage",
+      "sqs:ReceiveMessage",
       "sqs:GetQueueAttributes",
     ]
 
@@ -81,7 +81,7 @@ resource "aws_iam_policy" "queue_ingestor" {
   policy = "${data.aws_iam_policy_document.queue_ingestor.json}"
 }
 
-resource "aws_iam_policy_attachment" "queue_ingestor" {
-  name       = "${terraform.workspace}-${var.app_name}-analytics-elastic-ingestor"
+resource "aws_iam_role_policy_attachment" "queue_ingestor" {
   policy_arn = "${aws_iam_policy.queue_ingestor.arn}"
+  role       = "${aws_iam_role.queue_ingestor.name}"
 }

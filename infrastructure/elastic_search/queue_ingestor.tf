@@ -8,7 +8,7 @@ data "external" "analytics_zip" {
     "../shared_code/python/package_lambda.py",
     "${local.analytics_zip}",
     "${path.module}/packaging.config.json",
-    "../Pipfile.lock"
+    "../Pipfile.lock",
   ]
 }
 
@@ -21,9 +21,11 @@ resource "aws_lambda_permission" "sqs_invoke" {
 }
 
 resource "aws_lambda_event_source_mapping" "ingestor_queue_trigger" {
+  depends_on       = ["aws_lambda_permission.sqs_invoke", "aws_iam_role_policy_attachment.queue_ingestor"]
   event_source_arn = "${aws_sqs_queue.ingestion_queue.arn}"
   function_name    = "${aws_lambda_function.queue_ingestor.arn}"
   enabled          = true
+  batch_size       = 1
 }
 
 resource "aws_lambda_function" "queue_ingestor" {
