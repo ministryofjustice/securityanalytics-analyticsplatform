@@ -29,8 +29,6 @@ resource "aws_lambda_event_source_mapping" "ingestor_queue_trigger" {
 }
 
 resource "aws_lambda_function" "queue_ingestor" {
-  depends_on = ["data.external.analytics_zip"]
-
   function_name = "${terraform.workspace}-${var.app_name}-analytics-ingestor"
   handler       = "queue_ingestor.queue_ingestor.ingest"
   role          = "${aws_iam_role.queue_ingestor.arn}"
@@ -48,5 +46,11 @@ resource "aws_lambda_function" "queue_ingestor" {
       APP_NAME  = "${var.app_name}"
       TASK_NAME = "analytics"
     }
+  }
+
+  tags = {
+    source_hash = "${data.external.analytics_zip.result.hash}"
+    workspace = "${terraform.workspace}"
+    app_name  = "${var.app_name}"
   }
 }
