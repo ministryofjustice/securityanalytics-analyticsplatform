@@ -50,7 +50,7 @@ resource "aws_lambda_function" "queue_ingestor" {
 
   tags = {
     source_hash = "${data.external.analytics_zip.result.hash}"
-    workspace = "${terraform.workspace}"
-    app_name  = "${var.app_name}"
+    workspace   = "${terraform.workspace}"
+    app_name    = "${var.app_name}"
   }
 }
