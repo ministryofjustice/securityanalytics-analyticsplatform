@@ -6,10 +6,10 @@ import requests
 import json
 
 
-if len(sys.argv[1:]) != 5:
-    raise ValueError(f"update_object.py region app_name task_name url")
+if len(sys.argv[1:]) != 6:
+    raise ValueError(f"update_object.py region app_name object_def_file object_type existing_ids url")
 
-region, app_name, object_def_file, object_type, url = sys.argv[1:]
+region, app_name, object_def_file, object_type, existing_ids, url = sys.argv[1:]
 
 credentials = (
     boto3.Session()
@@ -25,9 +25,24 @@ aws_auth = AWS4Auth(
     session_token=credentials.token
 )
 
+existing_ids = existing_ids[1:-1].split(",")
+headers = {"kbn-xsrf": "anything"}
+
+# delete all existing
+for oid in existing_ids:
+    if oid != "":
+        r = requests.delete(
+            f"https://{url}/_plugin/kibana/api/saved_objects/{object_type}/{oid}",
+            headers=headers,
+            auth=aws_auth
+        )
+
+        if not r.ok:
+            raise ValueError(f"Failure response deleting old object ({r.status_code}): {r.text}")
+
+
 with open(object_def_file, "r") as definition:
     def_json = json.load(definition)
-    headers = {"kbn-xsrf": "anything"}
     r = requests.post(
         f"https://{url}/_plugin/kibana/api/saved_objects/{object_type}",
         headers=headers,

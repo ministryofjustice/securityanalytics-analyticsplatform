@@ -1,6 +1,18 @@
 data "template_file" "object_definition" {
   template = "${file(var.object_template)}"
-  vars ="${var.object_substitutions}"
+  vars ="${merge(map("object_title",var.object_title), var.object_substitutions)}"
+}
+
+data "external" "current_object" {
+  program = [
+    "python",
+    "${path.module}/get_current_object.py",
+    "${var.aws_region}",
+    "${var.app_name}",
+    "${urlencode(var.object_title)}",
+    "${var.object_type}",
+    "${data.aws_ssm_parameter.es_domain.value}",
+  ]
 }
 
 locals {
@@ -23,6 +35,6 @@ resource "null_resource" "update_object_definition" {
 
   provisioner "local-exec" {
     # Doesn't just write the new one, it also updates the aliases and starts re-indexing
-    command = "python ${path.module}/update_object.py ${var.aws_region} ${var.app_name}  ${local_file.object_definition.filename} ${var.object_type} ${data.aws_ssm_parameter.es_domain.value}"
+    command = "python ${path.module}/update_object.py ${var.aws_region} ${var.app_name} ${local_file.object_definition.filename} ${var.object_type} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
   }
 }

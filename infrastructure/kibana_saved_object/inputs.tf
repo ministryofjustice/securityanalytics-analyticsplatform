@@ -15,6 +15,10 @@ variable "ssm_source_stage" {
   description = "When deploying infrastructure for integration tests the source of ssm parameters for e.g. the congnito pool need to come from dev, not from the stage with the same name."
 }
 
+variable "object_title" {
+  type = "string"
+}
+
 variable "object_template" {
   type = "string"
 }
