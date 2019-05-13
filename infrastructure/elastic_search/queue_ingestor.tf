@@ -29,11 +29,12 @@ resource "aws_lambda_event_source_mapping" "ingestor_queue_trigger" {
 }
 
 resource "aws_lambda_function" "queue_ingestor" {
-  function_name = "${terraform.workspace}-${var.app_name}-analytics-ingestor"
-  handler       = "queue_ingestor.queue_ingestor.ingest"
-  role          = "${aws_iam_role.queue_ingestor.arn}"
-  runtime       = "python3.7"
-  filename      = "${local.analytics_zip}"
+  function_name    = "${terraform.workspace}-${var.app_name}-analytics-ingestor"
+  handler          = "queue_ingestor.queue_ingestor.ingest"
+  role             = "${aws_iam_role.queue_ingestor.arn}"
+  runtime          = "python3.7"
+  filename         = "${local.analytics_zip}"
+  source_code_hash = "${data.external.analytics_zip.result.hash}"
 
   layers = [
     "${data.aws_ssm_parameter.utils_layer.value}",
@@ -49,8 +50,7 @@ resource "aws_lambda_function" "queue_ingestor" {
   }
 
   tags = {
-    source_hash = "${data.external.analytics_zip.result.hash}"
-    workspace   = "${terraform.workspace}"
-    app_name    = "${var.app_name}"
+    workspace = "${terraform.workspace}"
+    app_name  = "${var.app_name}"
   }
 }
