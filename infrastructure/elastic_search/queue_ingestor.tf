@@ -50,8 +50,7 @@ resource "aws_lambda_function" "queue_ingestor" {
   }
 
   tags = {
-  
-    workspace   = "${terraform.workspace}"
-    app_name    = "${var.app_name}"
+    workspace = "${terraform.workspace}"
+    app_name  = "${var.app_name}"
   }
 }
