@@ -17,6 +17,7 @@ data "external" "current_object" {
 
 locals {
   base_name = "${basename(var.object_template)}"
+  object_id = "${md5(local_file.object_definition.content)}"
 }
 
 resource "local_file" "object_definition" {
@@ -30,11 +31,19 @@ resource "null_resource" "update_object_definition" {
   count = "${var.ssm_source_stage == terraform.workspace ? 1 : 0}"
 
   triggers {
-    allways  = "${md5(local_file.object_definition.content)}"
+    object_id  = "${local.object_id}"
+    script_hash    = "${md5(file("${path.module}/update_object.py"))}"
+    script_hash_2    = "${md5(file("${path.module}/destroy_object.py"))}"
   }
 
   provisioner "local-exec" {
     # Doesn't just write the new one, it also updates the aliases and starts re-indexing
-    command = "python ${path.module}/update_object.py ${var.aws_region} ${var.app_name} ${local_file.object_definition.filename} ${var.object_type} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
+    command = "python ${path.module}/update_object.py ${var.aws_region} ${var.app_name} ${local_file.object_definition.filename} ${var.object_type} ${local.object_id} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
+  }
+
+  provisioner "local-exec" {
+    when = "destroy"
+    # Doesn't just write the new one, it also updates the aliases and starts re-indexing
+    command = "python ${path.module}/destroy_object.py ${var.aws_region} ${var.app_name} ${var.object_type} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
   }
 }

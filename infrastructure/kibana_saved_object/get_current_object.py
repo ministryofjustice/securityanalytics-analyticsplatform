@@ -3,7 +3,7 @@ import sys
 import boto3
 from requests_aws4auth import AWS4Auth
 import requests
-import json
+
 
 
 if len(sys.argv[1:]) != 5:
@@ -25,7 +25,8 @@ aws_auth = AWS4Auth(
     session_token=credentials.token
 )
 
-url = f"https://{url}/_plugin/kibana/api/saved_objects/_find?type={object_type}&search_fields=title&search={object_name}"
+
+url = f"https://{url}/_plugin/kibana/api/saved_objects/_find?type={object_type}&search_fields=title&search=\"{object_name}\""
 r = requests.get(url, auth=aws_auth)
 
 if not r.ok:
@@ -39,6 +40,5 @@ if not total < per_page:
     raise ValueError(f"Results of existing {object_type} matching {object_name} exceed {total} per page limit {per_page}")
 
 existing_ids = [x["id"] for x in result["saved_objects"]]
-
 
 print(f"{{\"existing_ids\":\"[{','.join(existing_ids)}]\"}}")
