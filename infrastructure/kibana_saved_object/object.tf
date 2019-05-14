@@ -1,6 +1,6 @@
 data "template_file" "object_definition" {
   template = "${file(var.object_template)}"
-  vars ="${merge(map("object_title",var.object_title), var.object_substitutions)}"
+  vars     = "${merge(map("object_title",var.object_title), var.object_substitutions)}"
 }
 
 data "external" "current_object" {
@@ -22,7 +22,7 @@ locals {
 
 resource "local_file" "object_definition" {
   filename = "../.generated/${local.base_name}"
-  content = "${data.template_file.object_definition.rendered}"
+  content  = "${data.template_file.object_definition.rendered}"
 }
 
 # We always override the dashboard with the version we have, everytime we deploy, this is a quick operation thankfully
@@ -31,9 +31,9 @@ resource "null_resource" "update_object_definition" {
   count = "${var.ssm_source_stage == terraform.workspace ? 1 : 0}"
 
   triggers {
-    object_id  = "${local.object_id}"
-    script_hash    = "${md5(file("${path.module}/update_object.py"))}"
-    script_hash_2    = "${md5(file("${path.module}/destroy_object.py"))}"
+    object_id     = "${local.object_id}"
+    script_hash   = "${md5(file("${path.module}/update_object.py"))}"
+    script_hash_2 = "${md5(file("${path.module}/destroy_object.py"))}"
   }
 
   provisioner "local-exec" {
@@ -43,6 +43,7 @@ resource "null_resource" "update_object_definition" {
 
   provisioner "local-exec" {
     when = "destroy"
+
     # Doesn't just write the new one, it also updates the aliases and starts re-indexing
     command = "python ${path.module}/destroy_object.py ${var.aws_region} ${var.app_name} ${var.object_type} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
   }
