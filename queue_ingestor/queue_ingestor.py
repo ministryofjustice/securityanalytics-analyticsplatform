@@ -46,10 +46,10 @@ async def ingest(event, _):
             non_temporal_key = attrs["NonTemporalKey"]
             # This post is the history, used in time series
             # Note that the use of scan_id enables re-ingestion
-            post_to_es(endpoint, subject, message, scan_id)
+            post_to_es(endpoint, f"{subject}_history", message, scan_id)
             # This post is going to update the latest doc for this non temporal key
             # i.e. this produces an index where we can access the latest version of each scan.
-            post_to_es(endpoint, f"{subject}_latest", message, non_temporal_key)
+            post_to_es(endpoint, f"{subject}_snapshot", message, non_temporal_key)
 
 
 def post_to_es(endpoint, subject, message, doc_id=None):
