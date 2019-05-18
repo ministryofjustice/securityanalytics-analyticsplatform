@@ -32,7 +32,8 @@ variable "account_id" {}
 
 provider "aws" {
   region              = "${var.aws_region}"
-  profile             = "${var.app_name}"
+  # profile set in env variables to support MFA
+  # profile = "${var.app_name}"
   allowed_account_ids = ["${var.account_id}"]
 }
 
