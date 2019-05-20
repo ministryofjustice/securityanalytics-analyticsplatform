@@ -34,7 +34,6 @@ async def ingest(event, _):
         body = loads(event["body"])
         subject = body["Subject"]
         message = body["Message"]
-        print(f"Posting {message} to {es_url}")
 
         # TODO (https://dsdmoj.atlassian.net/browse/SA-91)
         if "MessageAttributes" not in body:
@@ -54,6 +53,7 @@ async def ingest(event, _):
 def post_to_es(endpoint, subject, message, doc_id=None):
     doc_id = f"/{doc_id}" if doc_id else ""
     es_url = f"https://{endpoint}/{subject}/_doc{doc_id}"
+    print(f"Posting {message} to {es_url}")
     r = requests.post(es_url, auth=awsauth, data=message, headers=HEADERS)
     print(f"Post completed {r.text}")
     response_json = r.json()
