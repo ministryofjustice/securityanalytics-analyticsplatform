@@ -4,6 +4,7 @@ data "local_file" "index_definition" {
 
 data "external" "current_index" {
   count = "${length(local.flavours)}"
+
   program = [
     "python",
     "${path.module}/get-current-write-index.py",
@@ -26,6 +27,7 @@ resource "null_resource" "setup_new_index" {
   triggers {
     index_hash  = "${md5(data.local_file.index_definition.content)}"
     script_hash = "${md5(file("${path.module}/write-new-index.py"))}"
+
     # Since terraform has no way to query the actual state of these resources, it will not re-create them if they have been deleted. This (although making the build noisy), will ensure that they are always created.
     allways = "${timestamp()}"
   }

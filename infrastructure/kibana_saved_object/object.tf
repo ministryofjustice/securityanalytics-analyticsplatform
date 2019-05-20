@@ -34,6 +34,7 @@ resource "null_resource" "update_object_definition" {
     object_id     = "${local.object_id}"
     script_hash   = "${md5(file("${path.module}/update_object.py"))}"
     script_hash_2 = "${md5(file("${path.module}/destroy_object.py"))}"
+
     # Since terraform has no way to query the actual state of these resources, it will not re-create them if they have been deleted. This (although making the build noisy), will ensure that they are always created.
     allways = "${timestamp()}"
   }
