@@ -41,8 +41,8 @@ async def ingest(event, _):
             post_to_es(endpoint, subject, message)
         else:
             attrs = body["MessageAttributes"]
-            scan_end_time = attrs["ScanEndTime"]
-            non_temporal_key = attrs["NonTemporalKey"]
+            scan_end_time = attrs["ScanEndTime"]["Value"]
+            non_temporal_key = attrs["NonTemporalKey"]["Value"]
             # This post is the history, used in time series, note that key enables re-ingestion
             post_to_es(endpoint, f"{subject}_history", message, f"{non_temporal_key}@{scan_end_time}")
             # This post is going to update the latest doc for this non temporal key
