@@ -53,6 +53,18 @@ data "aws_iam_policy_document" "queue_ingestor" {
     effect = "Allow"
 
     actions = [
+      "xray:Put*",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
       "sqs:DeleteMessage",
       "sqs:ReceiveMessage",
       "sqs:GetQueueAttributes",
