@@ -120,8 +120,8 @@ jobs:
     steps:
       - restore_cache:
           keys:
-            - git-v3-{{ .Branch }}-
-            - git-v3-
+            - git-v1-{{ .Branch }}-
+            - git-v1-
 
       - checkout:
           path: ~/project
@@ -138,12 +138,14 @@ jobs:
             export AWS_ACCESS_KEY_ID=$MOJ_ACCESS_KEY_ID
             export AWS_SECRET_ACCESS_KEY=$MOJ_SECRET_ACCESS_KEY
             set -x
+            . .circleci/env.sh
+            cd infrastructure
             terraform init -backend-config "bucket=$MOJ_APP_NAME-terraform-state" -reconfigure
             terraform workspace new dev || terraform workspace select dev
             terraform apply -auto-approve -var account_id=$MOJ_ACCOUNT_ID -var app_name=$MOJ_APP_NAME
 
       - save_cache:
-          key: git-v3-{{ .Branch }}-{{ .Revision }}
+          key: git-v1-{{ .Branch }}-{{ .Revision }}
           paths:
             - ".git"
 
