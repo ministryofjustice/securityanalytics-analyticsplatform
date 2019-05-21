@@ -116,7 +116,7 @@ jobs:
             terraform apply plan.file
 
   deploy-moj:
-    executor: terraform
+    executor: builder
     steps:
       - restore_cache:
           keys:
