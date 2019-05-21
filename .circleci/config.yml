@@ -134,10 +134,9 @@ jobs:
       - run:
           name: update git submodule
           command: |
-            set -x
             git submodule init
             git submodule update --remote
-            git submodule syn
+            git submodule sync
 
       - run:
           name: install virtual env
@@ -174,20 +173,20 @@ workflows:
   version: 2
   terraform-infrastructure:
     jobs:
-#      - setup
-#      - unit-test:
-#          requires: [ setup ]
-#      - approve:
-#          type: approval
-#          requires:
-#            - unit-test
-#          <<: *master-only
-#      - deploy:
-#          requires: [ approve ]
-#          <<: *master-only
-      - deploy-moj # :
-#          requires: [ approve ]
-#          <<: *master-only
+      - setup
+      - unit-test:
+          requires: [ setup ]
+      - approve:
+          type: approval
+          requires:
+            - unit-test
+          <<: *master-only
+      - deploy:
+          requires: [ approve ]
+          <<: *master-only
+      - deploy-moj:
+          requires: [ approve ]
+          <<: *master-only
 
 
 
