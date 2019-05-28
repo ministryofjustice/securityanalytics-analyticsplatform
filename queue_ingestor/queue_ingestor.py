@@ -1,8 +1,7 @@
-from lambda_decorators import async_handler
 import os
 import boto3
 from requests_aws4auth import AWS4Auth
-from utils.lambda_decorators import ssm_parameters
+from utils.lambda_decorators import ssm_parameters, async_handler
 from utils.json_serialisation import dumps
 import requests
 from json import loads
