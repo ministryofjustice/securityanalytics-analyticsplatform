@@ -1,6 +1,6 @@
 data "template_file" "object_definition" {
   template = "${file(var.object_template)}"
-  vars     = "${merge(map("object_title",var.object_title), var.object_substitutions)}"
+  vars     = "${merge(map("object_title", var.object_title), var.object_substitutions)}"
 }
 
 data "external" "current_object" {
@@ -21,7 +21,7 @@ locals {
 }
 
 resource "local_file" "object_definition" {
-  filename = "../.generated/${local.base_name}"
+  filename = "../.generated/${md5(var.object_title)}/${local.base_name}"
   content  = "${data.template_file.object_definition.rendered}"
 }
 
@@ -34,6 +34,9 @@ resource "null_resource" "update_object_definition" {
     object_id     = "${local.object_id}"
     script_hash   = "${md5(file("${path.module}/update_object.py"))}"
     script_hash_2 = "${md5(file("${path.module}/destroy_object.py"))}"
+
+    # Since terraform has no way to query the actual state of these resources, it will not re-create them if they have been deleted. This (although making the build noisy), will ensure that they are always created.
+    allways = "${timestamp()}"
   }
 
   provisioner "local-exec" {

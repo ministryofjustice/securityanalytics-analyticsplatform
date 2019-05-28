@@ -3,7 +3,7 @@ import sys
 import boto3
 from requests_aws4auth import AWS4Auth
 import requests
-
+import json
 
 
 if len(sys.argv[1:]) != 5:
@@ -25,14 +25,17 @@ aws_auth = AWS4Auth(
     session_token=credentials.token
 )
 
-
 url = f"https://{url}/_plugin/kibana/api/saved_objects/_find?type={object_type}&search_fields=title&search=\"{object_name}\""
 r = requests.get(url, auth=aws_auth)
 
 if not r.ok:
     raise ValueError(f"Failure response ({r.status_code}): {r.text}")
 
-result = r.json()
+try:
+    result = r.json()
+except json.decoder.JSONDecodeError:
+    raise ValueError(f"Failed to decode json response from args {sys.argv}")
+
 total = int(result["total"])
 per_page = int(result["per_page"])
 
