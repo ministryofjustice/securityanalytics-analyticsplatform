@@ -33,7 +33,7 @@ resource "aws_sqs_queue" "ingestion_queue" {
     app_name  = "${var.app_name}"
     workspace = "${terraform.workspace}"
   }
-  
+}
 
 resource "aws_sqs_queue_policy" "queue_policy" {
   queue_url = "${aws_sqs_queue.ingestion_queue.id}"
