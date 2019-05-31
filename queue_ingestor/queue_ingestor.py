@@ -13,7 +13,6 @@ app_name = os.environ["APP_NAME"]
 task_name = os.environ["TASK_NAME"]
 ssm_prefix = f"/{app_name}/{stage}"
 ssm_client = boto3.client("ssm", region_name=region)
-sqs_client = boto3.client("sqs", region_name=region)
 SSM_ES_ENDPOINT = f"{ssm_prefix}/analytics/elastic/es_endpoint/url"
 HEADERS = {"content-type": "application/json"}
 credentials = boto3.Session().get_credentials()
