@@ -1,15 +1,16 @@
 variable "app_name" {
-  type = "string"
+  type = string
 }
 
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 variable "account_id" {
-  type = "string"
+  type = string
 }
 
 variable "ssm_source_stage" {
-  type = "string"
+  type = string
 }
+
