@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "notify_topic_policy" {
     }
 
     resources = [
-      "${aws_sqs_queue.ingestion_queue.arn}",
+      aws_sqs_queue.ingestion_queue.arn,
     ]
   }
 }
@@ -29,13 +29,14 @@ data "aws_iam_policy_document" "notify_topic_policy" {
 resource "aws_sqs_queue" "ingestion_queue" {
   name = "${terraform.workspace}-${var.app_name}-es-ingestion-queue"
 
-  tags {
-    app_name  = "${var.app_name}"
-    workspace = "${terraform.workspace}"
+  tags = {
+    app_name  = var.app_name
+    workspace = terraform.workspace
   }
 }
 
 resource "aws_sqs_queue_policy" "queue_policy" {
-  queue_url = "${aws_sqs_queue.ingestion_queue.id}"
-  policy    = "${data.aws_iam_policy_document.notify_topic_policy.json}"
+  queue_url = aws_sqs_queue.ingestion_queue.id
+  policy    = data.aws_iam_policy_document.notify_topic_policy.json
 }
+
