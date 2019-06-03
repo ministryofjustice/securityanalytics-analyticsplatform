@@ -24,7 +24,7 @@ resource "null_resource" "setup_new_index" {
   # This count stops us from re-indexing dev, when looking at integration tests
   count = "${var.ssm_source_stage == terraform.workspace ? length(local.flavours) : 0}"
 
-  triggers {
+  triggers = {
     index_hash  = "${md5(data.local_file.index_definition.content)}"
     script_hash = "${md5(file("${path.module}/write-new-index.py"))}"
 

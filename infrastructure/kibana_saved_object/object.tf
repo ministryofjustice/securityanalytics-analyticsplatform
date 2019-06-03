@@ -30,7 +30,7 @@ resource "null_resource" "update_object_definition" {
   # This count stops us from re-indexing dev, when looking at integration tests
   count = "${var.ssm_source_stage == terraform.workspace ? 1 : 0}"
 
-  triggers {
+  triggers = {
     object_id     = "${local.object_id}"
     script_hash   = "${md5(file("${path.module}/update_object.py"))}"
     script_hash_2 = "${md5(file("${path.module}/destroy_object.py"))}"
