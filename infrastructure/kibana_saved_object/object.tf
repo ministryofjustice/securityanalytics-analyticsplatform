@@ -35,18 +35,11 @@ resource "null_resource" "update_object_definition" {
   # This count stops us from re-indexing dev, when looking at integration tests
   count = var.ssm_source_stage == terraform.workspace ? 1 : 0
 
-<<<<<<< Updated upstream
-  triggers {
-    object_id     = "${local.object_id}"
-    script_hash   = "${md5(file("${path.module}/update_object.py"))}"
-    script_hash_2 = "${md5(file("${path.module}/destroy_object.py"))}"
 
-=======
   triggers = {
     object_id     = local.object_id
     script_hash   = filemd5("${path.module}/update_object.py")
     script_hash_2 = filemd5("${path.module}/destroy_object.py")
->>>>>>> Stashed changes
     # Since terraform has no way to query the actual state of these resources, it will not re-create them if they have been deleted. This (although making the build noisy), will ensure that they are always created.
     allways = timestamp()
   }

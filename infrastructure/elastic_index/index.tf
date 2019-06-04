@@ -24,16 +24,11 @@ resource "null_resource" "setup_new_index" {
   # This count stops us from re-indexing dev, when looking at integration tests
   count = var.ssm_source_stage == terraform.workspace ? length(local.flavours) : 0
 
-<<<<<<< Updated upstream
-  triggers {
-    index_hash  = "${md5(data.local_file.index_definition.content)}"
-    script_hash = "${md5(file("${path.module}/write-new-index.py"))}"
 
-=======
+
   triggers = {
     index_hash  = md5(data.local_file.index_definition.content)
     script_hash = filemd5("${path.module}/write-new-index.py")
->>>>>>> Stashed changes
     # Since terraform has no way to query the actual state of these resources, it will not re-create them if they have been deleted. This (although making the build noisy), will ensure that they are always created.
     allways = timestamp()
   }
