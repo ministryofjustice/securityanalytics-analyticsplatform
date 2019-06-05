@@ -33,7 +33,7 @@ variable "account_id" {
 
 provider "aws" {
   version = "~> 2.13"
-  region = var.aws_region
+  region  = var.aws_region
 
   # N.B. To support all authentication use cases, we expect the local environment variables to provide auth details.
   allowed_account_ids = [var.account_id]
@@ -58,4 +58,3 @@ module "elastic_search" {
   ssm_source_stage = local.ssm_source_stage
   account_id       = var.account_id
 }
-

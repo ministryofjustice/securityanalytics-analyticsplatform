@@ -25,7 +25,7 @@ locals {
   subnets_list = [data.aws_ssm_parameter.instance_subnets.value]
 
   elastic_subnets        = local.subnets_list
-  elastic_instance_count = data.aws_ssm_parameter.num_azs.value == 1 ? 1 : 2
+  elastic_instance_count = tonumber(data.aws_ssm_parameter.num_azs.value) == 1 ? 1 : 2
 }
 
 data "aws_caller_identity" "account" {
@@ -79,16 +79,17 @@ resource "aws_elasticsearch_domain" "es" {
   snapshot_options {
     automated_snapshot_start_hour = 23
   }
+
   cognito_options {
     enabled          = true
     user_pool_id     = data.aws_ssm_parameter.user_pool.value
     identity_pool_id = data.aws_ssm_parameter.identity_pool.value
     role_arn         = data.aws_iam_role.sec_an_user.arn
   }
+
   tags = {
     Domain    = "SecurityData"
     app_name  = var.app_name
     workspace = terraform.workspace
   }
 }
-
