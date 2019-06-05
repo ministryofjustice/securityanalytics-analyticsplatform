@@ -1,5 +1,6 @@
 import os
 import boto3
+import aioboto3
 from requests_aws4auth import AWS4Auth
 from utils.lambda_decorators import ssm_parameters, async_handler
 from utils.json_serialisation import dumps
@@ -12,7 +13,7 @@ stage = os.environ["STAGE"]
 app_name = os.environ["APP_NAME"]
 task_name = os.environ["TASK_NAME"]
 ssm_prefix = f"/{app_name}/{stage}"
-ssm_client = boto3.client("ssm", region_name=region)
+ssm_client = aioboto3.client("ssm", region_name=region)
 SSM_ES_ENDPOINT = f"{ssm_prefix}/analytics/elastic/es_endpoint/url"
 HEADERS = {"content-type": "application/json"}
 credentials = boto3.Session().get_credentials()

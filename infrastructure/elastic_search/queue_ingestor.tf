@@ -6,6 +6,7 @@ data "external" "analytics_zip" {
   program = [
     "python",
     "../shared_code/python/package_lambda.py",
+    "-x",
     local.analytics_zip,
     "${path.module}/packaging.config.json",
     "../Pipfile.lock",
