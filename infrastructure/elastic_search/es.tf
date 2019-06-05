@@ -13,6 +13,7 @@ resource "aws_security_group" "es" {
   }
 
   tags = {
+    Name = "${terraform.workspace}-${var.app_name}-es"
     app_name  = var.app_name
     workspace = terraform.workspace
   }

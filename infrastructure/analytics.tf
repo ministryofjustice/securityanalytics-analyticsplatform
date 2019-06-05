@@ -32,6 +32,7 @@ variable "account_id" {
 }
 
 provider "aws" {
+  version = "~> 2.13"
   region = var.aws_region
 
   # N.B. To support all authentication use cases, we expect the local environment variables to provide auth details.
