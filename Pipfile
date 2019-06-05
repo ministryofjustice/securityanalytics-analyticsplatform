@@ -1,5 +1,6 @@
 [dev-packages]
 pytest = "*"
+aws-xray-sdk = "*"
 
 [packages]
 aioboto3 = "*"
