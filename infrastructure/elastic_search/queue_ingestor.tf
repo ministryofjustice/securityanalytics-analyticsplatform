@@ -43,12 +43,17 @@ resource "aws_lambda_function" "queue_ingestor" {
     data.aws_ssm_parameter.utils_layer.value,
   ]
 
+  tracing_config {
+    mode = var.use_xray ? "Active" : "PassThrough"
+  }
+
   environment {
     variables = {
       REGION    = var.aws_region
       STAGE     = terraform.workspace
       APP_NAME  = var.app_name
       TASK_NAME = "analytics"
+      USE_XRAY = var.use_xray
     }
   }
 

@@ -23,7 +23,7 @@ awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, region, "es",
     ssm_client,
     SSM_ES_ENDPOINT
 )
-@async_handler
+@async_handler()
 async def ingest(event, _):
     print(f"Processing {event}")
     endpoint = event["ssm_params"][SSM_ES_ENDPOINT]
