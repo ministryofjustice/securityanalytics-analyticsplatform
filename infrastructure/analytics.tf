@@ -31,6 +31,12 @@ variable "ssm_source_stage" {
 variable "account_id" {
 }
 
+variable "use_xray" {
+  type        = string
+  description = "Whether to instrument lambdas"
+  default     = false
+}
+
 provider "aws" {
   version = "~> 2.13"
   region  = var.aws_region
@@ -57,4 +63,15 @@ module "elastic_search" {
   aws_region       = var.aws_region
   ssm_source_stage = local.ssm_source_stage
   account_id       = var.account_id
+  use_xray         = var.use_xray
+}
+
+module "dead_letter_reporter" {
+  source           = "./dead_letter_reporter"
+  app_name         = var.app_name
+  aws_region       = var.aws_region
+  ssm_source_stage = local.ssm_source_stage
+  account_id       = var.account_id
+  use_xray         = var.use_xray
+  ingest_queue     = module.elastic_search.ingest_queue
 }

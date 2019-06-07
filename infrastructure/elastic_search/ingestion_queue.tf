@@ -29,6 +29,11 @@ data "aws_iam_policy_document" "notify_topic_policy" {
 resource "aws_sqs_queue" "ingestion_queue" {
   name = "${terraform.workspace}-${var.app_name}-es-ingestion-queue"
 
+  # N.B. We do not add a dead letter queue to this queue, because we would end up with a loop
+  # where the dead letter is put on this queue
+
+  # TODO add queue encryption
+
   tags = {
     app_name  = var.app_name
     workspace = terraform.workspace
