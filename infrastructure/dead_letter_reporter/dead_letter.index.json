@@ -1,0 +1,17 @@
+{
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "deadlettersenttime": {
+          "type": "date"
+        },
+        "deadletterqueuename": {
+          "type": "keyword"
+        },
+        "deadletterkey": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

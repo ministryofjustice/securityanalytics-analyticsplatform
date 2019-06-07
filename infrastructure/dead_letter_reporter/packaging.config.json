@@ -1,0 +1,25 @@
+{
+  "base_dirs": [
+    {
+      "dir": "../dead_letter_reporter",
+      "base_in_zip": "dead_letter_reporter"
+    },
+    {
+      "dir": "../.venv/Lib/site-packages",
+      "exclude_dev_deps": true
+    }
+  ],
+  "excludes": [
+    "pytest-asyncio",
+    "test",
+    "wheel",
+    "more_itertools",
+    "docutils",
+    "jmespath",
+    "python-dateutil",
+    "s3transfer",
+    "six",
+    "pip",
+    "setuptools"
+  ]
+}
