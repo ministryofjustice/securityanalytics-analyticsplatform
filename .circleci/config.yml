@@ -30,8 +30,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - other-v1-{{ .Branch }}-
-            - other-v1-
+            - other-v2-{{ .Branch }}-
+            - other-v2-
 
       - run:
           name: install virtual env
@@ -79,9 +79,9 @@ jobs:
             - ".git"
 
       - save_cache:
-          key: other-v1-{{ .Branch }}-{{ .Revision }}
+          key: other-v2-{{ .Branch }}-{{ .Revision }}
           paths:
-            - ".terraform"
+            - "infrastructure/.terraform"
             - ".venv"
             - ".cache"
             - ".generated"
@@ -129,8 +129,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - tf-moj-v1-{{ .Branch }}-
-            - tf-moj-v1-
+            - tf-moj-v2-{{ .Branch }}-
+            - tf-moj-v2-
 
       - run:
           name: update git submodule
@@ -166,9 +166,13 @@ jobs:
             - ".git"
 
       - save_cache:
-          key: tf-moj-v1-{{ .Branch }}-{{ .Revision }}
+          key: tf-moj-v2-{{ .Branch }}-{{ .Revision }}
           paths:
-            - ".terraform"
+            - "infrastructure/.terraform"
+            - ".venv"
+            - ".cache"
+            - ".generated"
+            - ".pytest_cache"
 
 workflows:
   version: 2
