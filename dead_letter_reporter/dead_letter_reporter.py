@@ -48,8 +48,7 @@ async def report_letters(event, _):
                     "Value": dead_letter_details["messageid"],
                     "DataType": "string"
                 },
-                # TODO rename scan end time in elastic ingestor to more general name
-                "ScanEndTime": {
+                "TemporalKey": {
                     "Value": dead_letter_details["deadlettersenttime"],
                     "DataType": "string"
                 }
