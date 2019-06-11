@@ -32,6 +32,7 @@ resource "local_file" "object_definition" {
 
 # We always override the dashboard with the version we have, everytime we deploy, this is a quick operation thankfully
 resource "null_resource" "update_object_definition" {
+  depends_on = [var.es_domain]
   # This count stops us from re-indexing dev, when looking at integration tests
   count = var.ssm_source_stage == terraform.workspace ? 1 : 0
 
