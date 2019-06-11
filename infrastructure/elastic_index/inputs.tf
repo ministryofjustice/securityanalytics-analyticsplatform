@@ -23,3 +23,6 @@ variable "index_file" {
   type = string
 }
 
+variable "es_domain"{
+  type = string
+}

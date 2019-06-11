@@ -14,3 +14,6 @@ output "ingest_queue" {
   value = aws_sqs_queue.ingestion_queue.arn
 }
 
+output "es_domain" {
+  value = aws_elasticsearch_domain.es.endpoint
+}

@@ -1,16 +1,17 @@
 module "dead_letter_index" {
-  source = "../elastic_index"
-  app_name = var.app_name
+  source           = "../elastic_index"
+  app_name         = var.app_name
   aws_region       = var.aws_region
   ssm_source_stage = var.ssm_source_stage
   index_file       = "${path.module}/dead_letter.index.json"
   index_name       = "data"
   task_name        = "dead_letter"
+  es_domain        = var.es_domain
 }
 
 module "dead_letter_index_history" {
-  source = "../kibana_saved_object"
-  app_name = var.app_name
+  source               = "../kibana_saved_object"
+  app_name             = var.app_name
   aws_region           = var.aws_region
   ssm_source_stage     = var.ssm_source_stage
   task_name            = "dead_letter"
@@ -19,11 +20,12 @@ module "dead_letter_index_history" {
 
   object_type  = "index-pattern"
   object_title = "dead_letter:data_history:read*"
+  es_domain    = var.es_domain
 }
 
 module "dead_letter_index_snapshot" {
-  source = "../kibana_saved_object"
-  app_name = var.app_name
+  source               = "../kibana_saved_object"
+  app_name             = var.app_name
   aws_region           = var.aws_region
   ssm_source_stage     = var.ssm_source_stage
   task_name            = "dead_letter"
@@ -32,11 +34,13 @@ module "dead_letter_index_snapshot" {
 
   object_type  = "index-pattern"
   object_title = "dead_letter:data_snapshot:read*"
+  es_domain    = var.es_domain
+
 }
 
 module "dead_letter_visualisation" {
-  source = "../kibana_saved_object"
-  app_name = var.app_name
+  source           = "../kibana_saved_object"
+  app_name         = var.app_name
   aws_region       = var.aws_region
   ssm_source_stage = var.ssm_source_stage
   task_name        = "dead_letter"
@@ -48,4 +52,5 @@ module "dead_letter_visualisation" {
 
   object_type  = "visualization"
   object_title = "Dead Letters"
+  es_domain    = var.es_domain
 }

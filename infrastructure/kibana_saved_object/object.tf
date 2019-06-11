@@ -16,7 +16,7 @@ data "external" "current_object" {
     var.app_name,
     urlencode(var.object_title),
     var.object_type,
-    data.aws_ssm_parameter.es_domain.value,
+    var.es_domain,
   ]
 }
 
@@ -46,14 +46,14 @@ resource "null_resource" "update_object_definition" {
 
   provisioner "local-exec" {
     # Doesn't just write the new one, it also updates the aliases and starts re-indexing
-    command = "python ${path.module}/update_object.py ${var.aws_region} ${var.app_name} ${local_file.object_definition.filename} ${var.object_type} ${local.object_id} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
+    command = "python ${path.module}/update_object.py ${var.aws_region} ${var.app_name} ${local_file.object_definition.filename} ${var.object_type} ${local.object_id} ${data.external.current_object.result.existing_ids} ${var.es_domain}"
   }
 
   provisioner "local-exec" {
     when = destroy
 
     # Doesn't just write the new one, it also updates the aliases and starts re-indexing
-    command = "python ${path.module}/destroy_object.py ${var.aws_region} ${var.app_name} ${var.object_type} ${data.external.current_object.result.existing_ids} ${data.aws_ssm_parameter.es_domain.value}"
+    command = "python ${path.module}/destroy_object.py ${var.aws_region} ${var.app_name} ${var.object_type} ${data.external.current_object.result.existing_ids} ${var.es_domain}"
   }
 }
 

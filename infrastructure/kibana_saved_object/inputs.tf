@@ -31,3 +31,6 @@ variable "object_substitutions" {
   type = map(string)
 }
 
+variable "es_domain" {
+  type = string
+}
