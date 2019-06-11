@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "notify_topic_policy" {
       variable = "aws:SourceArn"
 
       values = [
-        "arn:aws:sns:${var.aws_region}:${var.account_id}:*",
+        "arn:aws:*:${var.aws_region}:${var.account_id}:*",
       ]
     }
 

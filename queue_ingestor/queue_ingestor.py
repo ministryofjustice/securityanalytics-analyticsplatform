@@ -6,7 +6,6 @@ from utils.lambda_decorators import ssm_parameters, async_handler
 from utils.json_serialisation import dumps
 import requests
 from json import loads
-import warnings
 
 region = os.environ["REGION"]
 stage = os.environ["STAGE"]

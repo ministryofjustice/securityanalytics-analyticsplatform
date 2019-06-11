@@ -1,0 +1,26 @@
+{
+  "base_dirs": [
+    {
+      "dir": "../dynamo_elastic_sync",
+      "base_in_zip": "python/dynamo_elastic_sync"
+    },
+    {
+      "dir": "../.venv/Lib/site-packages",
+      "base_in_zip": "python",
+      "exclude_dev_deps": true
+    }
+  ],
+  "excludes": [
+    "pytest-asyncio",
+    "test",
+    "wheel",
+    "more_itertools",
+    "docutils",
+    "jmespath",
+    "python-dateutil",
+    "s3transfer",
+    "six",
+    "pip",
+    "setuptools"
+  ]
+}
