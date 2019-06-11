@@ -15,10 +15,14 @@ variable "ssm_source_stage" {
 }
 
 variable "use_xray" {
-  type = bool
+  type        = bool
   description = "Whether to instrument lambdas"
 }
 
 variable "ingest_queue" {
+  type = string
+}
+
+variable "es_domain" {
   type = string
 }

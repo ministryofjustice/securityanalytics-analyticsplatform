@@ -74,4 +74,5 @@ module "dead_letter_reporter" {
   account_id       = var.account_id
   use_xray         = var.use_xray
   ingest_queue     = module.elastic_search.ingest_queue
+  es_domain        = module.elastic_search.es_domain
 }
