@@ -46,11 +46,11 @@ async def report_letters(event, _):
                     # N.B. messageid not messageId because S3 attributes are made lower
                     # case so that they can be used as headers in HTTP requests
                     "Value": dead_letter_details["messageid"],
-                    "DataType": "string"
+                    "DataType": "String"
                 },
                 "TemporalKey": {
                     "Value": dead_letter_details["deadlettersenttime"],
-                    "DataType": "string"
+                    "DataType": "Number"
                 }
             }
 

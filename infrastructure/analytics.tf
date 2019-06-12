@@ -78,7 +78,7 @@ module "dead_letter_reporter" {
 }
 
 module "dynamo_elastic_sync" {
-  source = "./dynamo_elastic_sync_layer"
+  source           = "./dynamo_elastic_sync_layer"
   app_name         = var.app_name
   aws_region       = var.aws_region
   ssm_source_stage = local.ssm_source_stage

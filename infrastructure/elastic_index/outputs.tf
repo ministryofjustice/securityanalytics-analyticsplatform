@@ -8,15 +8,25 @@ locals {
   index_ids = slice(
     concat(local.index_hashes, local.no_index_response),
     local.integration_env ? 0 : length(local.index_hashes),
-    local.integration_env ? length(local.index_hashes) : length(local.index_hashes) + length(local.no_index_response),
+    local.integration_env ? length(local.index_hashes) : length(local.index_hashes) + length(local.no_index_response)
   )
 }
 
+output "index_id" {
+  value = var.snapshot_and_history ?
+    local.index_ids[index(local.flavours, "_snapshot")] :
+    local.index_ids[0]
+}
+
 output "history_index_id" {
-  value = local.index_ids[index(local.flavours, "history")]
+  value = var.snapshot_and_history ?
+    local.index_ids[index(local.flavours, "_history")] :
+    local.index_ids[0]
 }
 
 output "snapshot_index_id" {
-  value = local.index_ids[index(local.flavours, "snapshot")]
+  value = var.snapshot_and_history ?
+    local.index_ids[index(local.flavours, "snapshot")] :
+    local.index_ids[0]
 }
 

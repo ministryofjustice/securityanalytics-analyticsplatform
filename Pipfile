@@ -1,8 +1,10 @@
 [dev-packages]
 pytest = "*"
 aws-xray-sdk = "*"
+v = {editable = true,version = "*"}
 
 [packages]
+pytz = "*"
 aioboto3 = "*"
 requests = "*"
 requests-aws4auth = "*"
