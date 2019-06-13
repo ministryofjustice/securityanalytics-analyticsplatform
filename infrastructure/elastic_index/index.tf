@@ -33,7 +33,7 @@ resource "null_resource" "setup_new_index" {
 
   provisioner "local-exec" {
     # Doesn't just write the new one, it also updates the aliases and starts re-indexing
-    command = "python ${path.module}/write-new-index.py ${var.aws_region} ${var.app_name} ${var.task_name} ${var.index_name}_${local.flavours[count.index]} ${self.triggers.index_hash} ${data.local_file.index_definition.filename} ${var.es_domain} ${data.external.current_index.*.result.index[count.index]}"
+    command = "python ${path.module}/write-new-index.py ${var.aws_region} ${var.app_name} ${var.task_name} ${var.index_name}${local.flavours[count.index]} ${self.triggers.index_hash} ${data.local_file.index_definition.filename} ${var.es_domain} ${data.external.current_index.*.result.index[count.index]}"
   }
 }
 

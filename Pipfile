@@ -1,7 +1,6 @@
 [dev-packages]
 pytest = "*"
 aws-xray-sdk = "*"
-
 # TODO https://dsdmoj.atlassian.net/browse/SA-152 - Dont know why pipenv adds this for us without asking
 # or how we are accidentally asking to add it
 v = {editable = true,version = "*"}
