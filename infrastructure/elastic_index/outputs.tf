@@ -13,20 +13,14 @@ locals {
 }
 
 output "index_id" {
-  value = var.snapshot_and_history ?
-    local.index_ids[index(local.flavours, "_snapshot")] :
-    local.index_ids[0]
+  value = var.snapshot_and_history ? local.index_ids[index(local.flavours, "_snapshot")] : local.index_ids[0]
 }
 
 output "history_index_id" {
-  value = var.snapshot_and_history ?
-    local.index_ids[index(local.flavours, "_history")] :
-    local.index_ids[0]
+  value = var.snapshot_and_history ? local.index_ids[index(local.flavours, "_history")] : local.index_ids[0]
 }
 
 output "snapshot_index_id" {
-  value = var.snapshot_and_history ?
-    local.index_ids[index(local.flavours, "snapshot")] :
-    local.index_ids[0]
+  value = var.snapshot_and_history ? local.index_ids[index(local.flavours, "snapshot")] : local.index_ids[0]
 }
 
