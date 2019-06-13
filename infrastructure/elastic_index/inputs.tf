@@ -26,3 +26,9 @@ variable "index_file" {
 variable "es_domain"{
   type = string
 }
+
+variable "snapshot_and_history" {
+  type = bool
+  description = "Whether this particular source of data will have separate history and snapshot indexes"
+  default = true
+}

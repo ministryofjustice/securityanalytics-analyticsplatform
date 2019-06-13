@@ -11,20 +11,18 @@ data "external" "current_index" {
     var.aws_region,
     var.app_name,
     var.task_name,
-    "${var.index_name}_${local.flavours[count.index]}",
-    var.es_domain,
+    "${var.index_name}${local.flavours[count.index]}",
+    var.es_domain
   ]
 }
 
 locals {
-  flavours = ["history", "snapshot"]
+  flavours = var.snapshot_and_history ? ["_history", "_snapshot"] : [""]
 }
 
 resource "null_resource" "setup_new_index" {
   # This count stops us from re-indexing dev, when looking at integration tests
   count = var.ssm_source_stage == terraform.workspace ? length(local.flavours) : 0
-
-
 
   triggers = {
     index_hash  = md5(data.local_file.index_definition.content)

@@ -76,3 +76,11 @@ module "dead_letter_reporter" {
   ingest_queue     = module.elastic_search.ingest_queue
   es_domain        = module.elastic_search.es_domain
 }
+
+module "dynamo_elastic_sync" {
+  source           = "./dynamo_elastic_sync_layer"
+  app_name         = var.app_name
+  aws_region       = var.aws_region
+  ssm_source_stage = local.ssm_source_stage
+  account_id       = var.account_id
+}
