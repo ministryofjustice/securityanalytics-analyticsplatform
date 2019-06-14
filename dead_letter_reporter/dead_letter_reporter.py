@@ -39,7 +39,7 @@ async def report_letters(event, _):
             sqs_client.send_message(
                 QueueUrl=es_queue,
                 MessageBody=dumps({
-                    "Subject": "dead_letter:data",
+                    "Subject": "dead_letter:data:write",
                     "Message": dumps(dead_letter_details)
                 })
             )
