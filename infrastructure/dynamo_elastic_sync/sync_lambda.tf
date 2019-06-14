@@ -14,8 +14,8 @@ resource "aws_lambda_event_source_mapping" "table_sync_trigger" {
 }
 
 module "sync_table_dlq" {
-  // source = "github.com/ministryofjustice/securityanalytics-sharedcode//infrastructure/dead_letter_recorder"
-  source = "../../../securityanalytics-sharedcode/infrastructure/dead_letter_recorder"
+  source = "github.com/ministryofjustice/securityanalytics-sharedcode//infrastructure/dead_letter_recorder"
+  # source = "../../../securityanalytics-sharedcode/infrastructure/dead_letter_recorder"
   aws_region = var.aws_region
   app_name = var.app_name
   account_id = var.account_id
