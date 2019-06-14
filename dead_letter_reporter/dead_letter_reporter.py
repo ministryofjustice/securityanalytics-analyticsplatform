@@ -35,31 +35,13 @@ async def report_letters(event, _):
         obj = await s3_client.get_object(Bucket=bucket, Key=key)
         dead_letter_details = obj["Metadata"]
 
-        # N.B. Normally SNS notifiers that are the output of a scan feed the SQS queue
-        # When amazon copies the meta data from the SNS to SQS, it moves the message attributes
-        # to the message body. We replicate that here.
-        message_like_from_sns = {
-            "Subject": "dead_letter:data",
-            "Message": dumps(dead_letter_details),
-            "MessageAttributes": {
-                "NonTemporalKey": {
-                    # N.B. messageid not messageId because S3 attributes are made lower
-                    # case so that they can be used as headers in HTTP requests
-                    "Value": dead_letter_details["messageid"],
-                    "DataType": "String"
-                },
-                "TemporalKey": {
-                    "Value": dead_letter_details["deadlettersenttime"],
-                    "DataType": "Number"
-                }
-            }
-
-        }
-
         writes.append(
             sqs_client.send_message(
                 QueueUrl=es_queue,
-                MessageBody=dumps(message_like_from_sns)
+                MessageBody=dumps({
+                    "Subject": "dead_letter:data",
+                    "Message": dumps(dead_letter_details)
+                })
             )
         )
     await gather(*writes)
