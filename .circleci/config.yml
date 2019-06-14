@@ -16,8 +16,8 @@ jobs:
     steps:
       - restore_cache:
           keys:
-            - git-v1-{{ .Branch }}-
-            - git-v1-
+            - git-v2-{{ .Branch }}-
+            - git-v2-
 
       - checkout
 
@@ -30,8 +30,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - other-v2-{{ .Branch }}-
-            - other-v2-
+            - other-v3-{{ .Branch }}-
+            - other-v3-
 
       - run:
           name: install virtual env
@@ -71,12 +71,12 @@ jobs:
           path: infrastructure/terraform.plan
 
       - save_cache:
-          key: git-v1-{{ .Branch }}-{{ .Revision }}
+          key: git-v2-{{ .Branch }}-{{ .Revision }}
           paths:
             - ".git"
 
       - save_cache:
-          key: other-v2-{{ .Branch }}-{{ .Revision }}
+          key: other-v3-{{ .Branch }}-{{ .Revision }}
           paths:
             - "infrastructure/.terraform"
             - ".venv"
@@ -118,16 +118,16 @@ jobs:
     steps:
       - restore_cache:
           keys:
-            - git-v1-{{ .Branch }}-
-            - git-v1-
+            - git-v2-{{ .Branch }}-
+            - git-v2-
 
       - checkout:
           path: ~/project
 
       - restore_cache:
           keys:
-            - tf-moj-v2-{{ .Branch }}-
-            - tf-moj-v2-
+            - tf-moj-v3-{{ .Branch }}-
+            - tf-moj-v3-
 
       - run:
           name: update git submodule
@@ -158,12 +158,12 @@ jobs:
             terraform apply -auto-approve -var account_id=$MOJ_ACCOUNT_ID -var app_name=$MOJ_APP_NAME
 
       - save_cache:
-          key: git-v1-{{ .Branch }}-{{ .Revision }}
+          key: git-v2-{{ .Branch }}-{{ .Revision }}
           paths:
             - ".git"
 
       - save_cache:
-          key: tf-moj-v2-{{ .Branch }}-{{ .Revision }}
+          key: tf-moj-v3-{{ .Branch }}-{{ .Revision }}
           paths:
             - "infrastructure/.terraform"
             - ".venv"
