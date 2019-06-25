@@ -13,6 +13,8 @@ stage = os.environ["STAGE"]
 app_name = os.environ["APP_NAME"]
 index_name = os.environ["ES_INDEX_NAME"]
 dlq = os.environ["DLQ"]
+non_temp_key = os.environ["NON_TEMPORAL_KEY_FIELD"]
+temp_key = os.environ["TEMPORAL_KEY_FIELD"]
 
 # ssm params
 ssm_prefix = f"/{app_name}/{stage}"
@@ -33,7 +35,16 @@ class DynamoElasticSync:
 
     # This base class does nothing but others might
     def construct_msg_attributes(self, transformed_record):
-        return {}
+        result = {}
+        # Optional feature to map one of the fields from the transformed record into
+        # message attributes used by the analytics ingestor
+        if non_temp_key:
+            result["NonTemporalKey"] = {"Value": transformed_record[non_temp_key]}  # shape to match sns -> sqs msg attr
+
+        if temp_key:
+            result["TemporalKey"] = {"Value": transformed_record[temp_key]}  # shape to match sns -> sqs msg attr
+
+        return result
 
     @ssm_parameters(
         ssm_client,
@@ -44,20 +55,21 @@ class DynamoElasticSync:
 
         writes = []
         for record in event["Records"]:
-            print(f"Forwarding {record} to {index_name}")
             dynamo_data = record["dynamodb"]
             new_record = self._deserialise_image(dynamo_data, "NewImage")
             old_record = self._deserialise_image(dynamo_data, "OldImage")
 
             transformed_data = self.transform_record(new_record, old_record)
             msg_attributes = self.construct_msg_attributes(transformed_data)
+            payload = dumps(transformed_data)
+            print(f"Forwarding {payload} to {index_name}")
 
             # N.B. Normally SNS notifiers that are the output of a scan feed the SQS queue
             # When amazon copies the meta data from the SNS to SQS, it moves the message attributes
             # to the message body. We replicate that here.
             message_like_from_sns = {
                 "Subject": f"{index_name}:data:write",
-                "Message": dumps(transformed_data),
+                "Message": payload,
                 "MessageAttributes": msg_attributes
             }
 

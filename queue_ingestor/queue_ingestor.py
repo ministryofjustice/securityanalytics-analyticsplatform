@@ -33,26 +33,25 @@ async def ingest(event, _):
         subject = body["Subject"]
         message = body["Message"]
 
-        if carries_non_temporal_key(body):
+        if "MessageAttributes" in body:
             attrs = body["MessageAttributes"]
             non_temporal_key = attrs["NonTemporalKey"]["Value"]
-            # TODO deprecate and remove ScanEndTime support
-            scan_end_time = attrs["TemporalKey" if "TemporalKey" in attrs else "ScanEndTime"]["Value"]
-            # This post is the history, used in time series, note that key enables re-ingestion
-            post_to_es(endpoint, f"{subject}_history:write", message, f"{non_temporal_key}@{scan_end_time}")
-            # This post is going to update the latest doc for this non temporal key
-            # i.e. this produces an index where we can access the latest version of each scan.
-            post_to_es(endpoint, f"{subject}_snapshot:write", message, non_temporal_key)
+
+            if "NonTemporalKey" in attrs and ("TemporalKey" in attrs or "ScanEndTime" in attrs):
+                await post_history_and_snapshot(attrs, endpoint, message, non_temporal_key, subject)
+            else:
+                post_to_es(endpoint, subject, message, non_temporal_key)
         else:
             post_to_es(endpoint, subject, message)
 
 
-def carries_non_temporal_key(body):
-    if "MessageAttributes" in body:
-        attrs = body["MessageAttributes"]
-        # TODO deprecate and remove ScanEndTime support
-        return "NonTemporalKey" in attrs and ("TemporalKey" in attrs or "ScanEndTime" in attrs)
-    return False
+async def post_history_and_snapshot(attrs, endpoint, message, non_temporal_key, subject):
+    temporal_key = attrs["TemporalKey" if "TemporalKey" in attrs else "ScanEndTime"]["Value"]
+    # This post is the history, used in time series, note that key enables re-ingestion
+    post_to_es(endpoint, f"{subject}_history:write", message, f"{non_temporal_key}@{temporal_key}")
+    # This post is going to update the latest doc for this non temporal key
+    # i.e. this produces an index where we can access the latest version of each scan.
+    post_to_es(endpoint, f"{subject}_snapshot:write", message, non_temporal_key)
 
 
 def post_to_es(endpoint, subject, message, doc_id=None):
