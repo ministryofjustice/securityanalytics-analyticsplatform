@@ -59,6 +59,8 @@ resource "aws_lambda_function" "sync_info" {
       # Since dynamo streams are called
       DLQ = module.sync_table_dlq.url
       SET_COLUMN_TO_DIFF = var.set_column_to_diff == null ? "" : var.set_column_to_diff
+      NON_TEMPORAL_KEY_FIELD = var.non_temporal_key_field != null ? var.non_temporal_key_field : ""
+      TEMPORAL_KEY_FIELD = var.temporal_key_field != null ? var. temporal_key_field : ""
     }
   }
 
