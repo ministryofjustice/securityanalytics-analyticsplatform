@@ -51,25 +51,33 @@ async def ingest(event, _):
 def _post_snap_and_history(body, endpoint, message, data_source):
     attrs = body["MessageAttributes"]
 
-    if not ("TemporalKey" in attrs or "ParentKey" in attrs):
-        raise ValueError("Analytics ingestor requires both the TemporalKey and ParentKey message attributes be present")
-
-    temporal_key = attrs["TemporalKey"]["Value"]
+    if "ParentKey" not in attrs:
+        raise ValueError("Analytics ingestor requires the ParentKey message attribute be present")
     parent_key = attrs["ParentKey"]["Value"]
 
-    all_docs = loads(message)["__docs"]
+    # temporal key is optional, e.g. the address_info table has no history only the latest info
+    temporal_key = attrs["TemporalKey"]["Value"] if "TemporalKey" in attrs else None
+
+    message_json = loads(message)
+    all_docs = message_json.pop("__docs")
+    # naming alias just to make code more readable
+    global_fields = message_json
 
     for doc_type, docs in all_docs.items():
         _delete_old_snapshots(endpoint, data_source, doc_type, parent_key)
         for doc in docs:
             non_temporal_key = doc["NonTemporalKey"]
             content = doc["Data"]
+            doc_string = dumps({**global_fields, **content})
 
-            # This post is the history, used in time series, note that key enables re-ingestion
-            _post_to_es(endpoint, f"{data_source}:{doc_type}_history:write", content, f"{non_temporal_key}@{temporal_key}")
+            if temporal_key:
+                history_doc_id = f"{non_temporal_key}@{temporal_key}"
+                # This post is the history, used in time series, note that key enables re-ingestion
+                _post_to_es(endpoint, f"{data_source}:{doc_type}_history:write", doc_string, history_doc_id)
+
             # This post is going to update the latest doc for this non temporal key
             # i.e. this produces an index where we can access the latest version of each scan.
-            _post_to_es(endpoint, f"{data_source}:{doc_type}_snapshot:write", content, non_temporal_key)
+            _post_to_es(endpoint, f"{data_source}:{doc_type}_snapshot:write", doc_string, non_temporal_key)
 
 
 def _delete_old_snapshots(endpoint, data_source, doc_type, parent_key):
@@ -82,7 +90,7 @@ def _delete_old_snapshots(endpoint, data_source, doc_type, parent_key):
         }
       }
     }
-    r = requests.delete(es_url, auth=awsauth, data=dumps(delete_query), headers=HEADERS)
+    r = requests.post(es_url, auth=awsauth, data=dumps(delete_query), headers=HEADERS)
     print(f"Delete completed {r.text}")
     response_json = r.json()
     if "error" in response_json.keys():
@@ -93,7 +101,7 @@ def _post_to_es(endpoint, index, message, doc_id=None):
     doc_id = f"/{doc_id}" if doc_id else ""
     es_url = f"https://{endpoint}/{index}/_doc{doc_id}"
     print(f"Posting {message} to {es_url}")
-    r = requests.post(es_url, auth=awsauth, data=dumps(message), headers=HEADERS)
+    r = requests.post(es_url, auth=awsauth, data=message, headers=HEADERS)
     print(f"Post completed {r.text}")
     response_json = r.json()
     if "error" in response_json.keys():

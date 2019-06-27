@@ -40,6 +40,8 @@ resource "aws_lambda_function" "queue_ingestor" {
   filename         = local.analytics_zip
   source_code_hash = data.external.analytics_zip.result.hash
 
+  timeout = 2 * 60  # Really should never need that long, but 3 seconds is too short now we have doc collections
+
   layers = [
     data.aws_ssm_parameter.utils_layer.value,
   ]
