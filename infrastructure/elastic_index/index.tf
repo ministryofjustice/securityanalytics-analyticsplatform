@@ -17,7 +17,9 @@ data "external" "current_index" {
 }
 
 locals {
-  flavours = var.snapshot_and_history ? ["_history", "_snapshot"] : [""]
+  # If flavours are explicitly provided use them, otherwise, if snapshot and history are enabled those
+  # two flavours are used, otherwise no flavours are used
+  flavours = var.flavours  == null ? (var.snapshot_and_history ? ["_history", "_snapshot"] : [""]) : var.flavours
 }
 
 resource "null_resource" "setup_new_index" {

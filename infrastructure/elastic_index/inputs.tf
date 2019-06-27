@@ -32,3 +32,9 @@ variable "snapshot_and_history" {
   description = "Whether this particular source of data will have separate history and snapshot indexes"
   default = true
 }
+
+variable "flavours" {
+  type = list(string)
+  description = "Override e.g. snapshot and history with your own set of flavours"
+  default = null
+}

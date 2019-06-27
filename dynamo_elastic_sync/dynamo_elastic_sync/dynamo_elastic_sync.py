@@ -39,9 +39,10 @@ class DynamoElasticSync:
         # Optional feature to map one of the fields from the transformed record into
         # message attributes used by the analytics ingestor
         if non_temp_key:
-            result["NonTemporalKey"] = {"Value": transformed_record[non_temp_key]}  # shape to match sns -> sqs msg attr
+            non_temp_key_val = transformed_record[non_temp_key]
+            result["ParentKey"] = {"Value": non_temp_key_val}
 
-        if temp_key:
+        if temp_key and not temp_key == "":
             result["TemporalKey"] = {"Value": transformed_record[temp_key]}  # shape to match sns -> sqs msg attr
 
         return result
@@ -61,14 +62,19 @@ class DynamoElasticSync:
 
             transformed_data = self.transform_record(new_record, old_record)
             msg_attributes = self.construct_msg_attributes(transformed_data)
-            payload = dumps(transformed_data)
+
+            # Uses the format that the ResultsContext uses
+            # TODO https://dsdmoj.atlassian.net/browse/SA-170 - reuse the ResultsContext
+            non_temp_key_val = transformed_data[non_temp_key]
+            payload = dumps({"__docs": {"data": [{"Data": transformed_data, "NonTemporalKey": non_temp_key_val}]}})
+
             print(f"Forwarding {payload} to {index_name}")
 
             # N.B. Normally SNS notifiers that are the output of a scan feed the SQS queue
             # When amazon copies the meta data from the SNS to SQS, it moves the message attributes
             # to the message body. We replicate that here.
             message_like_from_sns = {
-                "Subject": f"{index_name}:data:write",
+                "Subject": f"{index_name}",
                 "Message": payload,
                 "MessageAttributes": msg_attributes
             }
