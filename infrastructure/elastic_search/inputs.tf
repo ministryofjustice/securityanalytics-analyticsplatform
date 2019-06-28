@@ -19,3 +19,9 @@ variable "use_xray" {
   description = "Whether to instrument lambdas"
 }
 
+variable "analytics_ingestion_timeout" {
+  type = number
+  # Really should never need that long, but 3 seconds is too short now we have doc collections
+  default = 2 * 60
+}
+

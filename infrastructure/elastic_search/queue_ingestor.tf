@@ -14,11 +14,11 @@ data "external" "analytics_zip" {
 }
 
 resource "aws_lambda_permission" "sqs_invoke" {
-  statement_id  = "AllowExecutionFromSQS"
-  action        = "lambda:InvokeFunction"
+  statement_id = "AllowExecutionFromSQS"
+  action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.queue_ingestor.function_name
-  principal     = "sqs.amazonaws.com"
-  source_arn    = aws_sqs_queue.ingestion_queue.arn
+  principal = "sqs.amazonaws.com"
+  source_arn = aws_sqs_queue.ingestion_queue.arn
 }
 
 resource "aws_lambda_event_source_mapping" "ingestor_queue_trigger" {
@@ -27,20 +27,21 @@ resource "aws_lambda_event_source_mapping" "ingestor_queue_trigger" {
     aws_iam_role_policy_attachment.queue_ingestor,
   ]
   event_source_arn = aws_sqs_queue.ingestion_queue.arn
-  function_name    = aws_lambda_function.queue_ingestor.arn
-  enabled          = true
-  batch_size       = 1
+  function_name = aws_lambda_function.queue_ingestor.arn
+  enabled = true
+  batch_size = 1
+
 }
 
 resource "aws_lambda_function" "queue_ingestor" {
-  function_name    = "${terraform.workspace}-${var.app_name}-analytics-ingestor"
-  handler          = "queue_ingestor.queue_ingestor.ingest"
-  role             = aws_iam_role.queue_ingestor.arn
-  runtime          = "python3.7"
-  filename         = local.analytics_zip
+  function_name = "${terraform.workspace}-${var.app_name}-analytics-ingestor"
+  handler = "queue_ingestor.queue_ingestor.ingest"
+  role = aws_iam_role.queue_ingestor.arn
+  runtime = "python3.7"
+  filename = local.analytics_zip
   source_code_hash = data.external.analytics_zip.result.hash
 
-  timeout = 2 * 60  # Really should never need that long, but 3 seconds is too short now we have doc collections
+  timeout = var.analytics_ingestion_timeout
 
   layers = [
     data.aws_ssm_parameter.utils_layer.value,
@@ -52,9 +53,9 @@ resource "aws_lambda_function" "queue_ingestor" {
 
   environment {
     variables = {
-      REGION    = var.aws_region
-      STAGE     = terraform.workspace
-      APP_NAME  = var.app_name
+      REGION = var.aws_region
+      STAGE = terraform.workspace
+      APP_NAME = var.app_name
       TASK_NAME = "analytics"
       USE_XRAY = var.use_xray
     }
@@ -62,7 +63,7 @@ resource "aws_lambda_function" "queue_ingestor" {
 
   tags = {
     workspace = terraform.workspace
-    app_name  = var.app_name
+    app_name = var.app_name
   }
 }
 
