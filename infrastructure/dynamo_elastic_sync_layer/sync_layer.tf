@@ -13,8 +13,8 @@ data "external" "sync_zip" {
 }
 
 resource "aws_lambda_layer_version" "dynamo_elastic_sync_layer" {
-  description = "Layer containing a lambda template with hash ${data.external.sync_zip.result.hash}"
-  filename    = local.sync_zip
-  layer_name  = "${terraform.workspace}-${var.app_name}-dynamo-elastic-sync"
+  description         = "Layer containing a lambda template with hash ${data.external.sync_zip.result.hash}"
+  filename            = local.sync_zip
+  layer_name          = "${terraform.workspace}-${var.app_name}-dynamo-elastic-sync"
   compatible_runtimes = ["python3.7"]
 }

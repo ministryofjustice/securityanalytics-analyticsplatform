@@ -4,8 +4,8 @@ data "aws_iam_role" "sec_an_user" {
 
 data "aws_iam_policy_document" "kibana_permissions" {
   statement {
-    effect = "Allow"
-    actions = ["es:ESHttp*"]
+    effect    = "Allow"
+    actions   = ["es:ESHttp*"]
     resources = ["${aws_elasticsearch_domain.es.arn}/*"]
   }
 }

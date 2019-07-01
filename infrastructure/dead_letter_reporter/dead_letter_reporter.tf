@@ -12,12 +12,12 @@ resource "aws_lambda_permission" "s3_invoke" {
 
 resource "aws_s3_bucket_notification" "reporter_trigger" {
   depends_on = [aws_lambda_permission.s3_invoke]
-  bucket = data.aws_ssm_parameter.dead_letter_bucket_name.value
+  bucket     = data.aws_ssm_parameter.dead_letter_bucket_name.value
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.dlq_reporter.arn
-    events = ["s3:ObjectCreated:*"]
-    filter_suffix = ".tar.gz"
+    events              = ["s3:ObjectCreated:*"]
+    filter_suffix       = ".tar.gz"
   }
 }
 
@@ -36,7 +36,7 @@ data "external" "reporter_zip" {
 }
 
 resource "aws_lambda_function" "dlq_reporter" {
-  depends_on = [aws_iam_role_policy_attachment.reporter_policy]
+  depends_on       = [aws_iam_role_policy_attachment.reporter_policy]
   function_name    = "${terraform.workspace}-${var.app_name}-dead-letter-reporter"
   handler          = "dead_letter_reporter.dead_letter_reporter.report_letters"
   role             = aws_iam_role.reporter_role.arn

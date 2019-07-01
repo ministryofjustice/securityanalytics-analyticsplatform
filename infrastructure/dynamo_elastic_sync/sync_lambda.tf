@@ -7,7 +7,7 @@ resource "aws_lambda_permission" "dynamo_invoke" {
 }
 
 resource "aws_lambda_event_source_mapping" "table_sync_trigger" {
-  depends_on = [aws_lambda_permission.dynamo_invoke]
+  depends_on        = [aws_lambda_permission.dynamo_invoke]
   event_source_arn  = var.dynamodb_stream_arn
   function_name     = aws_lambda_function.sync_info.function_name
   starting_position = "LATEST"
@@ -29,7 +29,7 @@ module "sync_table_dlq" {
 }
 
 resource "aws_lambda_function" "sync_info" {
-  depends_on = [aws_iam_role_policy_attachment.table_syncer_perms]
+  depends_on       = [aws_iam_role_policy_attachment.table_syncer_perms]
   function_name    = "${terraform.workspace}-${var.app_name}-sync-${var.syncer_name}"
   handler          = var.set_column_to_diff == null ? "dynamo_elastic_sync.dynamo_elastic_sync.forward_record" : "dynamo_elastic_sync.diffing_sync.forward_record"
   role             = aws_iam_role.table_syncer.arn

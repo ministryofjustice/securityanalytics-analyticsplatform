@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "notify_topic_policy" {
     effect = "Allow"
 
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["sns.amazonaws.com"]
     }
 

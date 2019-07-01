@@ -34,7 +34,7 @@ resource "aws_lambda_event_source_mapping" "ingestor_queue_trigger" {
 }
 
 resource "aws_lambda_function" "queue_ingestor" {
-  depends_on = [aws_iam_role_policy_attachment.queue_ingestor]
+  depends_on       = [aws_iam_role_policy_attachment.queue_ingestor]
   function_name    = "${terraform.workspace}-${var.app_name}-analytics-ingestor"
   handler          = "queue_ingestor.queue_ingestor.ingest"
   role             = aws_iam_role.queue_ingestor.arn

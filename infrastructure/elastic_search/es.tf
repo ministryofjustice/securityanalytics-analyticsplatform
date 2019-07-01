@@ -41,10 +41,10 @@ data "aws_iam_policy_document" "es_access" {
 
     principals {
       identifiers = [data.aws_iam_role.sec_an_user.arn]
-      type = "AWS"
+      type        = "AWS"
     }
 
-    actions = ["es:ESHttp*"]
+    actions   = ["es:ESHttp*"]
     resources = ["${aws_elasticsearch_domain.es.arn}/*"]
   }
 }
