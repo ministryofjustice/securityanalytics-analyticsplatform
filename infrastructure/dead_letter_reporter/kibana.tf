@@ -5,7 +5,6 @@ module "dead_letter_index" {
   ssm_source_stage     = var.ssm_source_stage
   index_file           = "${path.module}/dead_letter.index.json"
   index_name           = "data"
-  task_name            = "dead_letter"
   snapshot_and_history = false
   es_domain            = var.es_domain
 }
@@ -15,7 +14,6 @@ module "dead_letter_index_pattern" {
   app_name             = var.app_name
   aws_region           = var.aws_region
   ssm_source_stage     = var.ssm_source_stage
-  task_name            = "dead_letter"
   object_template      = "${path.module}/dead_letter.pattern.json"
   object_substitutions = {}
 
@@ -29,7 +27,6 @@ module "dead_letter_visualisation" {
   app_name         = var.app_name
   aws_region       = var.aws_region
   ssm_source_stage = var.ssm_source_stage
-  task_name        = "dead_letter"
   object_template  = "${path.module}/dead_letter.vis.json"
 
   object_substitutions = {
