@@ -1,18 +1,18 @@
 module "dead_letter_index" {
-  source           = "../elastic_index"
-  app_name         = var.app_name
-  aws_region       = var.aws_region
-  ssm_source_stage = var.ssm_source_stage
-  index_file       = "${path.module}/dead_letter.index.json"
-  index_name       = "data"
-  task_name        = "dead_letter"
+  source               = "../elastic_index"
+  app_name             = var.app_name
+  aws_region           = var.aws_region
+  ssm_source_stage     = var.ssm_source_stage
+  index_file           = "${path.module}/dead_letter.index.json"
+  index_name           = "data"
+  task_name            = "dead_letter"
   snapshot_and_history = false
-  es_domain        = var.es_domain
+  es_domain            = var.es_domain
 }
 
 module "dead_letter_index_pattern" {
-  source = "../kibana_saved_object"
-  app_name = var.app_name
+  source               = "../kibana_saved_object"
+  app_name             = var.app_name
   aws_region           = var.aws_region
   ssm_source_stage     = var.ssm_source_stage
   task_name            = "dead_letter"

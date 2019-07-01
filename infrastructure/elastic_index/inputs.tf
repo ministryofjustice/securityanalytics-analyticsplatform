@@ -23,18 +23,18 @@ variable "index_file" {
   type = string
 }
 
-variable "es_domain"{
+variable "es_domain" {
   type = string
 }
 
 variable "snapshot_and_history" {
-  type = bool
+  type        = bool
   description = "Whether this particular source of data will have separate history and snapshot indexes"
-  default = true
+  default     = true
 }
 
 variable "flavours" {
-  type = list(string)
+  type        = list(string)
   description = "Override e.g. snapshot and history with your own set of flavours"
-  default = null
+  default     = null
 }

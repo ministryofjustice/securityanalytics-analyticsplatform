@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "reporter_policy" {
   }
 
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = ["s3:GetObject"]
 
     resources = [
@@ -64,8 +64,8 @@ data "aws_iam_policy_document" "reporter_policy" {
   }
 
   statement {
-    effect    = "Allow"
-    actions   = ["sqs:SendMessage"]
+    effect = "Allow"
+    actions = ["sqs:SendMessage"]
     resources = [var.ingest_queue]
   }
 
@@ -96,10 +96,10 @@ resource "aws_iam_role_policy_attachment" "reporter_policy" {
 data "aws_iam_policy_document" "lambda_trust" {
   statement {
     actions = ["sts:AssumeRole"]
-    effect  = "Allow"
+    effect = "Allow"
 
     principals {
-      type        = "Service"
+      type = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
   }

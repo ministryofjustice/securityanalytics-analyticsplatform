@@ -13,15 +13,15 @@ resource "aws_security_group" "es" {
   }
 
   tags = {
-    Name = "${terraform.workspace}-${var.app_name}-es"
+    Name      = "${terraform.workspace}-${var.app_name}-es"
     app_name  = var.app_name
     workspace = terraform.workspace
   }
 }
 
 locals {
-  // Have to use only 2 AZs because of terraform issue
-  // https://github.com/terraform-providers/terraform-provider-aws/issues/7504
+  # Have to use only 2 AZs because of terraform issue
+  # https://github.com/terraform-providers/terraform-provider-aws/issues/7504
   subnets_list = [data.aws_ssm_parameter.instance_subnets.value]
 
   elastic_subnets        = local.subnets_list
@@ -41,10 +41,10 @@ data "aws_iam_policy_document" "es_access" {
 
     principals {
       identifiers = [data.aws_iam_role.sec_an_user.arn]
-      type        = "AWS"
+      type = "AWS"
     }
 
-    actions   = ["es:ESHttp*"]
+    actions = ["es:ESHttp*"]
     resources = ["${aws_elasticsearch_domain.es.arn}/*"]
   }
 }

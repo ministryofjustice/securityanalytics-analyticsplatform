@@ -5,7 +5,7 @@ data "aws_iam_policy_document" "notify_topic_policy" {
     ]
 
     condition {
-      test = "ArnEquals"
+      test     = "ArnEquals"
       variable = "aws:SourceArn"
 
       values = [
@@ -17,18 +17,13 @@ data "aws_iam_policy_document" "notify_topic_policy" {
 
     principals {
       type = "Service"
-      identifiers = [
-        "sns.amazonaws.com"]
+      identifiers = ["sns.amazonaws.com"]
     }
 
     resources = [
       aws_sqs_queue.ingestion_queue.arn,
     ]
   }
-}
-
-locals {
-
 }
 
 resource "aws_sqs_queue" "ingestion_queue" {
@@ -42,13 +37,13 @@ resource "aws_sqs_queue" "ingestion_queue" {
   # TODO add queue encryption
 
   tags = {
-    app_name = var.app_name
+    app_name  = var.app_name
     workspace = terraform.workspace
   }
 }
 
 resource "aws_sqs_queue_policy" "queue_policy" {
   queue_url = aws_sqs_queue.ingestion_queue.id
-  policy = data.aws_iam_policy_document.notify_topic_policy.json
+  policy    = data.aws_iam_policy_document.notify_topic_policy.json
 }
 

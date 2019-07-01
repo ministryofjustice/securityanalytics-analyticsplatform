@@ -1,9 +1,12 @@
 # N.B. until terraform 0.12 we need this workaround
 # https://github.com/hashicorp/terraform/issues/12453#issuecomment-311611817
 locals {
-  index_hashes      = null_resource.setup_new_index.*.triggers.index_hash
-  no_index_response = ["noIndex", "noIndex"]
-  integration_env   = var.ssm_source_stage == terraform.workspace
+  index_hashes = null_resource.setup_new_index.*.triggers.index_hash
+  no_index_response = [
+    "noIndex",
+    "noIndex"
+  ]
+  integration_env = var.ssm_source_stage == terraform.workspace
 
   index_ids = slice(
     concat(local.index_hashes, local.no_index_response),
