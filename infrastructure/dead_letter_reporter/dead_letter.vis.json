@@ -9,3 +9,4 @@
       "searchSourceJSON": "{\"index\":\"${index}\",\"filter\":[],\"query\":{\"language\":\"lucene\",\"query\":\"\"}}"
     }
   }
+}

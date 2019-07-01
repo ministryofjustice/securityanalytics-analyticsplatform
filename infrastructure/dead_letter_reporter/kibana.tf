@@ -5,6 +5,7 @@ module "dead_letter_index" {
   ssm_source_stage     = var.ssm_source_stage
   index_file           = "${path.module}/dead_letter.index.json"
   index_name           = "data"
+  task_name            = "dead_letter"
   snapshot_and_history = false
   es_domain            = var.es_domain
 }
