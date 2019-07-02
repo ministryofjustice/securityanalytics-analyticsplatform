@@ -37,6 +37,9 @@ for oid in existing_ids:
         )
 
         if not r.ok:
-            raise ValueError(f"Failure response deleting old object ({r.status_code}): {r.text}")
+            # TODO how to determine the difference between a failure because it isn't there to delete and it is there
+            # and we couldn't delete it, only the second should be considered an exception
+            print(f"{{\"aok\":\"false\"}}")
+            sys.exit()
 
 print(f"{{\"aok\":\"true\"}}")
