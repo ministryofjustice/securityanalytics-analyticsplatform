@@ -12,7 +12,7 @@ region, app_name, object_type, existing_ids, url = sys.argv[1:]
 
 credentials = (
     boto3.Session()
-    if "AWS_ACCESS_KEY" in os.environ.keys() else
+    if "AWS_ACCESS_KEY_ID" in os.environ.keys() else
     boto3.Session(profile_name=app_name)
 ).get_credentials()
 
