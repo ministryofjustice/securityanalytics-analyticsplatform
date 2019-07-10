@@ -4,7 +4,6 @@ import boto3
 from requests_aws4auth import AWS4Auth
 import requests
 import json
-from urllib import parse
 
 if len(sys.argv[1:]) != 7:
     raise ValueError(f"update_object.py region app_name object_def_file object_type object_id, existing_ids url")
@@ -13,7 +12,7 @@ region, app_name, object_def_file, object_type, oid, existing_ids, url = sys.arg
 
 credentials = (
     boto3.Session()
-    if "AWS_ACCESS_KEY_ID" in os.environ.keys() else
+    if "AWS_ACCESS_KEY" in os.environ.keys() else
     boto3.Session(profile_name=app_name)
 ).get_credentials()
 
