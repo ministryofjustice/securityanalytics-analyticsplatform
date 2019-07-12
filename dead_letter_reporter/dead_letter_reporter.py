@@ -5,6 +5,8 @@ from utils.objectify_dict import objectify
 from urllib.parse import unquote_plus
 from asyncio import gather
 from utils.json_serialisation import dumps
+from utils.time_utils import iso_date_string_from_timestamp
+from datetime import datetime
 
 region = os.environ["REGION"]
 stage = os.environ["STAGE"]
@@ -31,9 +33,19 @@ async def report_letters(event, _):
         bucket = s3_object.bucket.name
         key = unquote_plus(s3_object.object.key)
 
-        print(f"Reporting new dead letter file: {(bucket, key)}")
+        print(f"Loading new dead letter file: {(bucket, key)}")
         obj = await s3_client.get_object(Bucket=bucket, Key=key)
         dead_letter_details = obj["Metadata"]
+        print(f"Wring new dead letter with metadata: {dead_letter_details}")
+
+        ensure_essential_metadata(
+            dead_letter_details,
+            [
+                ("deadletterqueuename", "Metadata missing"),
+                ("deadletterkey", "Metadata missing"),
+                ("deadlettersenttime", str(iso_date_string_from_timestamp(datetime.now().timestamp())))
+            ]
+        )
 
         writes.append(
             sqs_client.send_message(
@@ -44,4 +56,12 @@ async def report_letters(event, _):
                 })
             )
         )
+    print(f"Gathering writes")
     await gather(*writes)
+    print(f"Written successfully")
+
+
+def ensure_essential_metadata(dead_letter_details, meta_data_and_defaults):
+    for attribute, default_value in meta_data_and_defaults:
+        if attribute not in dead_letter_details:
+            dead_letter_details[attribute] = default_value
