@@ -6,10 +6,6 @@ from utils.lambda_decorators import ssm_parameters, async_handler
 from utils.json_serialisation import dumps
 import requests
 from json import loads
-from aws_xray_sdk.core import patch_all
-
-# This to setup xray
-patch_all()
 
 region = os.environ["REGION"]
 stage = os.environ["STAGE"]

@@ -7,7 +7,6 @@ pytz = "*"
 aioboto3 = "*"
 requests = "*"
 requests-aws4auth = "*"
-aws-xray-sdk = "*"
 
 [requires]
 python_version = "3.7"
