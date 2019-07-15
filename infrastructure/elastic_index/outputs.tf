@@ -7,6 +7,7 @@ locals {
     "noIndex"
   ]
   integration_env = var.ssm_source_stage == terraform.workspace
+  
   index_ids = slice(
     concat(local.index_hashes, local.no_index_response),
     local.integration_env ? 0 : length(local.index_hashes),
